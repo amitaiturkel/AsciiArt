@@ -1,5 +1,8 @@
 package image_char_matching;
 
+import image.ImageOperator;
+
+import java.awt.*;
 import java.util.*;
 
 public class SubImgCharMatcher{
@@ -54,18 +57,17 @@ public class SubImgCharMatcher{
 
             }
         }
-    return getImageAverage(new_image,rows,cols);
+    return ImageOperator.getImageAverage(new_image,rows,cols);
     }
-    private double getImageAverage(double[][] image, int rows, int cols){
-        double sum = 0;
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                sum += image[row][col] ;
+    public double imageToDouble(Image image){
 
-            }
-        }
-        return (double) sum /(rows+1) *(cols+1);
 
+    }
+
+
+    private double colorToGray(Color color){
+        return color.getRed() * 0.2126 + color.getGreen() * 0.7152
+                + color.getBlue() * 0.0722;
     }
     private char getMinChar(char[] charArray){
         int minAscii = Integer.MAX_VALUE;
