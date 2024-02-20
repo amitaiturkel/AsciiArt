@@ -59,16 +59,10 @@ public class SubImgCharMatcher{
         }
     return ImageOperator.getImageAverage(new_image,rows,cols);
     }
-    public double imageToDouble(Image image){
 
 
-    }
 
 
-    private double colorToGray(Color color){
-        return color.getRed() * 0.2126 + color.getGreen() * 0.7152
-                + color.getBlue() * 0.0722;
-    }
     private char getMinChar(char[] charArray){
         int minAscii = Integer.MAX_VALUE;
 
