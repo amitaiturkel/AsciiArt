@@ -1,82 +1,163 @@
 package image_char_matching;
 
+import image.Image;
 import image.ImageOperator;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.*;
 
-public class SubImgCharMatcher{
+/**
+ * A class that handles matching characters based on their brightness levels.
+ */
+public class SubImgCharMatcher {
     private Set<Character> myCharSet = new HashSet<>();
-    //private Map<double, Set<char>> doubleToCharMap = new HashMap<>();
+    private Map<Character, Double> charBrightnessMap = new HashMap<>();
 
-
-    public SubImgCharMatcher(char[] charset){
-        for(char c: charset){
+    /**
+     * Constructor for SubImgCharMatcher.
+     *
+     * @param charset an array of characters to initialize the character set.
+     */
+    public SubImgCharMatcher(char[] charset) {
+        for (char c : charset) {
             myCharSet.add(c);
+            charBrightnessMap.put(c, charBrightness(c));
         }
     }
-    public void addChar(char c){
-        myCharSet.add(c);
-    }
-    public void removeChar(char c){
-        myCharSet.remove(c);
 
-    }
-
-    private double char_to_double(char c){
+    /**
+     * Calculates the brightness of a character.
+     *
+     * @param c the character for which brightness is calculated.
+     * @return the brightness value of the character.
+     */
+    private double charBrightness(char c) {
         int sum = 0;
         boolean[][] boolArray = CharConverter.convertToBoolArray(c);
-        for (int row =0 ;row <CharConverter.DEFAULT_PIXEL_RESOLUTION;row++){
-            for (int col =0 ;row <CharConverter.DEFAULT_PIXEL_RESOLUTION;col++)
-                 if(boolArray[row][col]){
-                     sum += 1;
-                 }
+        for (int row = 0; row < CharConverter.DEFAULT_PIXEL_RESOLUTION; row++) {
+            for (int col = 0; row < CharConverter.DEFAULT_PIXEL_RESOLUTION; col++) {
+                if (boolArray[row][col]) {
+                    sum += 1;
+                }
+            }
         }
         return (double) sum / (Math.pow(CharConverter.DEFAULT_PIXEL_RESOLUTION, 2));
     }
-    public double subImageBrightness(char[][] image ,int rows,int cols ) {
-        double max_char = -1;
-        double min_char = 17;
 
-        double[][] new_image = new double[rows + 1][cols + 1];
+    /**
+     * Finds the character with the minimum brightness in the character set.
+     *
+     * @return the character with the minimum brightness.
+     */
+    private char getCharWithMinBrightness() {
+        char minChar = '\0';
+        double minBrightness = Double.MAX_VALUE;
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                new_image[row][col] = char_to_double(image[row][col]);
-                if (new_image[row][col] < min_char) {
-                    min_char = new_image[row][col];
-                }
-                if (new_image[row][col] > max_char) {
-                    max_char = new_image[row][col];
-                }
+        for (Character c : charBrightnessMap.keySet()) {
+            double currentBrightness = charBrightnessMap.get(c);
+            if (currentBrightness < minBrightness) {
+                minBrightness = currentBrightness;
+                minChar = c;
             }
         }
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                new_image[row][col] = (double)(new_image[row][col] - min_char) / (max_char - min_char);
 
-            }
-        }
-    return ImageOperator.getImageAverage(new_image,rows,cols);
+        return minChar;
     }
 
+    /**
+     * Finds the character with the maximum brightness in the character set.
+     *
+     * @return the character with the maximum brightness.
+     */
+    private char getCharWithMaxBrightness() {
+        char maxChar = '\0';
+        double maxBrightness = Double.MIN_VALUE;
 
-
-
-    private char getMinChar(char[] charArray){
-        int minAscii = Integer.MAX_VALUE;
-
-        // Initialize minChar to store the character with the minimum ASCII value
-        char minChar = '\0'; // Default value
-
-        // Iterate through the array
-        for (char currentChar : charArray) {
-            // Check if the ASCII value of the current character is smaller than minAscii
-            if ((int) currentChar < minAscii) {
-                minAscii = (int) currentChar;
-                minChar = currentChar;
+        for (Character c : charBrightnessMap.keySet()) {
+            double currentBrightness = charBrightnessMap.get(c);
+            if (currentBrightness > maxBrightness) {
+                maxBrightness = currentBrightness;
+                maxChar = c;
             }
         }
-        return minChar;
+
+        return maxChar;
+    }
+
+    /**
+     * Converts the brightness of a character to a value between 0 and 1 using linear stretching.
+     *
+     * @param c the character for which brightness is converted.
+     * @return the normalized brightness value of the character.
+     */
+    private double charToDouble(char c) {
+        double minBrightness = charBrightness(getCharWithMinBrightness());
+        double maxBrightness = charBrightness(getCharWithMaxBrightness());
+
+        return (charBrightness(c) - minBrightness) / (maxBrightness - minBrightness);
+    }
+
+    /**
+     * Adds a character to the character set.
+     *
+     * @param c the character to add.
+     */
+    public void addChar(char c) {
+        myCharSet.add(c);
+        charBrightnessMap.put(c, charBrightness(c));
+    }
+
+    /**
+     * Removes a character from the character set.
+     *
+     * @param c the character to remove.
+     */
+    public void removeChar(char c) {
+        myCharSet.remove(c);
+        charBrightnessMap.remove(c, charBrightness(c));
+    }
+
+    /**
+     * Finds the character in the character set that matches the given brightness level.
+     *
+     * @param brightness the brightness level to match.
+     * @return the character that matches the brightness level.
+     */
+    public char getCharByImageBrightness(double brightness) {
+        int min = (int) 'Z';
+        double min_dis = 10001;
+        for (Character c : charBrightnessMap.keySet()) {
+            if (Math.abs(brightness - charBrightnessMap.get(c)) <= min_dis) {
+                if (Math.abs(brightness - charBrightnessMap.get(c)) == min_dis) {
+                    min = Math.min(min, c);
+                } else {
+                    min = c;
+                }
+
+            }
+        }
+        return (char) min;
+    }
+
+    /**
+     * Calculates the average brightness of an image.
+     *
+     * @param image the image for which average brightness is calculated.
+     * @param rows  the number of rows in the image.
+     * @param cols  the number of columns in the image.
+     * @return the average brightness of the image.
+     */
+    public double subImageBrightness(Image image, int rows, int cols) {
+        double max_char = -1;
+        double min_char = 17;
+        Color[][] image_as_color = ImageOperator.ImageToColorArray(image);
+
+        double sum = 0;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                sum += ImageOperator.colorToGray(image_as_color[row][col]);
+            }
+        }
+        return sum / (image.getWidth() * image.getHeight()) * 255;
     }
 }

@@ -1,22 +1,44 @@
 package image;
 
-import java.awt.*;
+import java.awt.Color;
 
-public  class ImageOperator {
+/**
+ * A utility class that provides various operations on images.
+ */
+public class ImageOperator {
 
+    private ImageOperator() {
+        // Private constructor to prevent instantiation, as this is a utility class.
+    }
 
-    private ImageOperator(){}
-
-    public static double getImageAverage(double[][] image, int rows, int cols){
+    /**
+     * Calculates the average value of a 2D array representing an image.
+     *
+     * @param image 2D array representing the image.
+     * @param rows  Number of rows in the image.
+     * @param cols  Number of columns in the image.
+     * @return Average value of the image.
+     */
+    public static double getImageAverage(double[][] image, int rows, int cols) {
         double sum = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                sum += image[row][col] ;
+                sum += image[row][col];
             }
         }
-        return (double) sum /(rows+1) *(cols+1);
-
+        return (double) sum / ((rows + 1) * (cols + 1));
     }
+
+    /**
+     * Retrieves a sub-image from the given image based on specified coordinates.
+     *
+     * @param image      The original image.
+     * @param startRow   Starting row index of the sub-image.
+     * @param endRow     Ending row index of the sub-image.
+     * @param startCol   Starting column index of the sub-image.
+     * @param endCol     Ending column index of the sub-image.
+     * @return 2D array representing the sub-image.
+     */
     public static Color[][] getSubImage(Image image, int startRow, int endRow, int startCol, int endCol) {
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
@@ -41,15 +63,26 @@ public  class ImageOperator {
 
         return subImage;
     }
-    public static Color[][][][] createSubImageArray(Image image, int resolution) {
+
+    /**
+     * Creates a 2D array of sub-images from the given image based on a specified resolution.
+     *
+     * @param image      The original image.
+     * @param resolution Desired resolution for sub-images.
+     * @return 2D array of sub-images.
+     */
+    public static Image[][] createSubImageArray(Image image, int resolution) {
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
-        int subImageSize = Math.min(imageWidth, imageHeight) / resolution;
 
+        // Calculate the size of each sub-image based on the desired resolution
+        int subImageSize = imageWidth / resolution;
+
+        // Calculate the number of rows and columns in the resulting array
         int rows = imageHeight / subImageSize;
-        int cols = imageWidth / subImageSize;
+        int cols = resolution;
 
-        Color[][][][] subImagesArray = new Color[rows][cols][][];
+        Image[][] subImagesArray = new Image[rows][cols];
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -62,80 +95,129 @@ public  class ImageOperator {
                 // Extract sub-image using the getSubImage function
                 Color[][] subImage = getSubImage(image, startRow, endRow, startCol, endCol);
 
-                // Store the sub-image in the 2D array
-                subImagesArray[row][col] = subImage;
+                // Create an Image object and store it in the 2D array
+                subImagesArray[row][col] = new Image(subImage, subImageSize, subImageSize);
             }
         }
 
         return subImagesArray;
     }
-    private static double colorToGray(Color color){
-        return color.getRed() * 0.2126 + color.getGreen() * 0.7152
-                + color.getBlue() * 0.0722;
+
+    /**
+     * Converts a 2D array of Color objects to a 2D array of grayscale values.
+     *
+     * @param color 2D array of Color objects.
+     * @return 2D array of grayscale values.
+     */
+    public static double[][] colorArrayToGrayArray(Color[][] color) {
+        int rows = color.length;
+        int cols = color[0].length;
+        double[][] grayArray = new double[rows][cols];
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                grayArray[row][col] = colorToGray(color[row][col]);
+            }
+        }
+
+        return grayArray;
     }
+
+    /**
+     * Converts a Color object to its corresponding grayscale value.
+     *
+     * @param color Color object to convert.
+     * @return Grayscale value.
+     */
+    public static double colorToGray(Color color) {
+        return color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
+    }
+
+    /**
+     * Calculates the average brightness of an entire image.
+     *
+     * @param image The image for which average brightness is calculated.
+     * @return Average brightness value of the image.
+     */
     public static double ImageBrightness(Image image) {
-        Color[][] imageColors = ImageToColorArray(padding(image));// if already padded doent do anything
+        Color[][] imageColors = ImageToColorArray(padding(image)); // if already padded doesn't do anything
         double sum = 0;
-        for (int row = 0;row < image.getHeight(); row++) {
-            for(int col = 0 ;col < image.getWidth();col++){
-                sum +=colorToGray(imageColors[row][col]);
+        for (int row = 0; row < image.getHeight(); row++) {
+            for (int col = 0; col < image.getWidth(); col++) {
+                sum += colorToGray(imageColors[row][col]);
             }
-
         }
-        return sum /(image.getHeight() * image.getWidth() *255);
+        return sum / (image.getHeight() * image.getWidth() * 255);
     }
 
-        public static Color[][] ImageToColorArray (Image image){
-            int width = image.getWidth();
-            int height = image.getHeight();
+    /**
+     * Converts an Image object to a 2D array of Color objects.
+     *
+     * @param image The Image object to convert.
+     * @return 2D array of Color objects.
+     */
+    public static Color[][] ImageToColorArray(Image image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-            Color[][] imageColors = new Color[height][width];
+        Color[][] imageColors = new Color[height][width];
 
-            for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) {
-                    imageColors[row][col] = image.getPixel(row, col);
-                }
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                imageColors[row][col] = image.getPixel(row, col);
             }
-
-            return imageColors;
         }
 
-        public static Image padding (Image image){
-            int width = image.getWidth();
-            int height = image.getHeight();
-            int new_width = findNextTwoPower(width);
-            int new_height = findNextTwoPower(height);
-
-            Color[][] image_colors = new Color[new_height][new_width];
-            // Calculate padding on all sides
-            int paddingWidthLeft = (new_width - width) / 2;
-            int paddingHeightTop = (new_height - height) / 2;
-            // Copy original image to the new array with symmetrical padding
-            for (int row = 0; row < height; row++) {
-                for (int col = paddingWidthLeft; col < (width + paddingWidthLeft); col++) {
-                    image_colors[row + paddingHeightTop][col] = image.getPixel(row, col - paddingWidthLeft);
-                }
-            }
-            // Fill the left and right padded regions with white color
-            for (int row = 0; row < new_height; row++) {
-                // Fill left side
-                for (int col = 0; col < paddingWidthLeft; col++) {
-                    image_colors[row][col] = Color.WHITE;
-                }
-                // Fill right side
-                for (int col = (width + paddingWidthLeft); col < (new_width); col++) {
-                    image_colors[row][col] = Color.WHITE;
-                }
-            }
-            return new Image(image_colors, new_width, new_height);
-        }
-
-        private static int findNextTwoPower ( int num){
-            int power = 2;
-            while (power < num) {
-                power *= 2;
-            }
-            return power;
-        }
-
+        return imageColors;
     }
+
+    /**
+     * Pads an image to the next power of two, ensuring symmetry.
+     *
+     * @param image The original image.
+     * @return Padded Image object.
+     */
+    public static Image padding(Image image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int new_width = findNextTwoPower(width);
+        int new_height = findNextTwoPower(height);
+
+        Color[][] image_colors = new Color[new_height][new_width];
+        // Calculate padding on all sides
+        int paddingWidthLeft = (new_width - width) / 2;
+        int paddingHeightTop = (new_height - height) / 2;
+        // Copy original image to the new array with symmetrical padding
+        for (int row = 0; row < height; row++) {
+            for (int col = paddingWidthLeft; col < (width + paddingWidthLeft); col++) {
+                image_colors[row + paddingHeightTop][col] = image.getPixel(row, col - paddingWidthLeft);
+            }
+        }
+        // Fill the left and right padded regions with white color
+        for (int row = 0; row < new_height; row++) {
+            // Fill left side
+            for (int col = 0; col < paddingWidthLeft; col++) {
+                image_colors[row][col] = Color.WHITE;
+            }
+            // Fill right side
+            for (int col = (width + paddingWidthLeft); col < (new_width); col++) {
+                image_colors[row][col] = Color.WHITE;
+            }
+        }
+        return new Image(image_colors, new_width, new_height);
+    }
+
+    /**
+     * Finds the next power of two for a given number.
+     *
+     * @param num The input number.
+     * @return The next power of two.
+     */
+    private static int findNextTwoPower(int num) {
+        int power = 2;
+        while (power < num) {
+            power *= 2;
+        }
+        return power;
+    }
+}
