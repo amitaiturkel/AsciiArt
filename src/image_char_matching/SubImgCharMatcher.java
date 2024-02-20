@@ -1,8 +1,10 @@
-import java.util*;
+package image_char_matching;
+
+import java.util.*;
 
 public class SubImgCharMatcher{
-    private Set<char> myCharSet = new HashSet<>();
-    private Map<double, Set<char>> doubleToCharMap = new HashMap<>();
+    private Set<Character> myCharSet = new HashSet<>();
+    //private Map<double, Set<char>> doubleToCharMap = new HashMap<>();
 
 
     public SubImgCharMatcher(char[] charset){
@@ -19,19 +21,19 @@ public class SubImgCharMatcher{
     }
 
     private double char_to_double(char c){
-        int sum = 0
+        int sum = 0;
         boolean[][] boolArray = CharConverter.convertToBoolArray(c);
         for (int row =0 ;row <CharConverter.DEFAULT_PIXEL_RESOLUTION;row++){
-            for (int col =0 ;row <CharConverter.DEFAULT_PIXEL_RESOLUTION;coll++
+            for (int col =0 ;row <CharConverter.DEFAULT_PIXEL_RESOLUTION;col++)
                  if(boolArray[row][col]){
-                     sum += 1
+                     sum += 1;
                  }
         }
         return (double) sum / (Math.pow(CharConverter.DEFAULT_PIXEL_RESOLUTION, 2));
     }
     public double subImageBrightness(char[][] image ,int rows,int cols ) {
-        int max_char = -1;
-        int min_char = 17;
+        double max_char = -1;
+        double min_char = 17;
 
         double[][] new_image = new double[rows + 1][cols + 1];
 
@@ -39,20 +41,31 @@ public class SubImgCharMatcher{
             for (int col = 0; col < cols; col++) {
                 new_image[row][col] = char_to_double(image[row][col]);
                 if (new_image[row][col] < min_char) {
-                    min_char = new_image[row][col]
+                    min_char = new_image[row][col];
                 }
                 if (new_image[row][col] > max_char) {
-                    max_char = new_image[row][col]
+                    max_char = new_image[row][col];
                 }
             }
         }
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                new_image[row][col] = double(new_image[row][col] - min_char) / (max_char - min_char);
+                new_image[row][col] = (double)(new_image[row][col] - min_char) / (max_char - min_char);
 
             }
         }
-    return new_image;
+    return getImageAverage(new_image,rows,cols);
+    }
+    private double getImageAverage(double[][] image, int rows, int cols){
+        double sum = 0;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                sum += image[row][col] ;
+
+            }
+        }
+        return (double) sum /(rows+1) *(cols+1);
+
     }
     private char getMinChar(char[] charArray){
         int minAscii = Integer.MAX_VALUE;
