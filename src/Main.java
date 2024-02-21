@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         // Example usage within the AsciiArtAlgorithm class
-        String imagePath = "C:/Users/home/Desktop/study/second year/OOP/AsciiArt/board.jpeg";
+        String imagePath = "board.jpeg";
         int resolution = 2;
         char[] charsets = {'m', 'o'};
 
