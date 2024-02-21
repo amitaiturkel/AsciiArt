@@ -10,9 +10,10 @@ import java.util.*;
  * A class that handles matching characters based on their brightness levels.
  */
 public class SubImgCharMatcher {
-    // TODO: save max and min charBrightness and update them in O(1) in add and in O(n) in remove
     private Set<Character> myCharSet = new HashSet<>();
     private Map<Character, Double> charBrightnessMapBeforeStratch = new HashMap<>();
+
+
 
     /**
      * Constructor for SubImgCharMatcher.
