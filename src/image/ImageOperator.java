@@ -102,29 +102,9 @@ public class ImageOperator {
                 subImagesArray[row][col] = new Image(subImage, subImageSize, subImageSize);
             }
         }
-
         return subImagesArray;
     }
 
-    /**
-     * Converts a 2D array of Color objects to a 2D array of grayscale values.
-     *
-     * @param color 2D array of Color objects.
-     * @return 2D array of grayscale values.
-     */
-    public static double[][] colorArrayToGrayArray(Color[][] color) {
-        int rows = color.length;
-        int cols = color[0].length;
-        double[][] grayArray = new double[rows][cols];
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                grayArray[row][col] = colorToGray(color[row][col]);
-            }
-        }
-
-        return grayArray;
-    }
 
     /**
      * Converts a Color object to its corresponding grayscale value.
@@ -139,6 +119,20 @@ public class ImageOperator {
 
         return color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
     }
+    public static double ImageBrightness(Image image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        double sum = 0;
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                sum += colorToGray(image.getPixel(row, col));
+            }
+        }
+
+        return sum/(image.getWidth() *image.getHeight() * 255);
+    }
+
+
 
 
     /**

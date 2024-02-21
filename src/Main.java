@@ -1,4 +1,5 @@
 import ascii_art.AsciiArtAlgorithm;
+import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
 import image.Image;
@@ -13,8 +14,7 @@ public class Main {
         char[] charsets1 = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         char startChar = ' ';
         char endChar = '~';
-        String imagePath = "board.jpeg";
-        int resolution = 2;
+        String imagePath = "cat.jpeg";
         char[] charsets = {'m', 'o'};
 
         int arraySize = endChar - startChar + 1;
@@ -26,9 +26,9 @@ public class Main {
         Image image = new Image(imagePath);
         AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
         char[][] asciiImage = asciiArtAlgorithm.run();
-
+        AsciiOutput consoleAsciiOutput = new HtmlAsciiOutput("cat.html","Courier New");
         // Display the generated ASCII art using ConsoleAsciiOutput
-        HtmlAsciiOutput consoleAsciiOutput = new HtmlAsciiOutput("cat.html","Courier New");
+        //AsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
         consoleAsciiOutput.out(asciiImage);
 
     }

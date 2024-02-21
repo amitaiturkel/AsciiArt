@@ -33,8 +33,7 @@ public class AsciiArtAlgorithm {
         char[][] asciiImage = new char[subImageRows][subImageCols];
         for (int row = 0; row < subImageRows; row++) {
             for (int col = 0; col < subImageCols; col++) {
-                double subImageBrightness = charMatcher.subImageBrightness(subImagesArray[row][col],
-                        subImagesArray[row][col].getHeight(), subImagesArray[row][col].getWidth());
+                double subImageBrightness = ImageOperator.ImageBrightness(subImagesArray[row][col]);
                 asciiImage[row][col] = charMatcher.getCharByImageBrightness(subImageBrightness);
 
             }

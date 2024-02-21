@@ -91,17 +91,6 @@ public class SubImgCharMatcher {
      * @return the character with the minimum brightness.
      */
     private char getCharWithMinBrightness() {
-        char minChar = '\0';
-        double minBrightness = Double.MAX_VALUE;
-
-        for (Character c : charBrightnessMapBeforeStratch.keySet()) {
-            double currentBrightness = charBrightnessMapBeforeStratch.get(c);
-            if (currentBrightness < minBrightness) {
-                minBrightness = currentBrightness;
-                minChar = c;
-            }
-        }
-
         return minChar;
     }
 
@@ -111,17 +100,6 @@ public class SubImgCharMatcher {
      * @return the character with the maximum brightness.
      */
     private char getCharWithMaxBrightness() {
-        char maxChar = '\0';
-        double maxBrightness = Double.MIN_VALUE;
-
-        for (Character c : charBrightnessMapBeforeStratch.keySet()) {
-            double currentBrightness = charBrightnessMapBeforeStratch.get(c);
-            if (currentBrightness > maxBrightness) {
-                maxBrightness = currentBrightness;
-                maxChar = c;
-            }
-        }
-
         return maxChar;
     }
 
@@ -197,22 +175,6 @@ public class SubImgCharMatcher {
         return (char) min;
     }
 
-    /**
-     * Calculates the average brightness of an image.
-     *
-     * @param image the image for which average brightness is calculated.
-     * @param rows  the number of rows in the image.
-     * @param cols  the number of columns in the image.
-     * @return the average brightness of the image.
-     */
-    public double subImageBrightness(Image image, int rows, int cols) {
-        Color[][] image_as_color = ImageOperator.ImageToColorArray(image);
-        double sum = 0;
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                sum += ImageOperator.colorToGray(image_as_color[row][col]);
-            }
-        }
-        return sum / ((image.getWidth() * image.getHeight()) * 255);
-    }
+
+
 }
