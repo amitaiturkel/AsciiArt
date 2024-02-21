@@ -164,6 +164,12 @@ public class ImageOperator {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
+                Color c = image.getPixel(row, col);
+                if (c == null){
+                    System.out.print(row);
+                    System.out.println(col);
+
+                }
                 imageColors[row][col] = image.getPixel(row, col);
             }
         }
@@ -189,8 +195,8 @@ public class ImageOperator {
         int paddingHeightTop = (new_height - height) / 2;
         // Copy original image to the new array with symmetrical padding
         for (int row = 0; row < height; row++) {
-            for (int col = paddingWidthLeft; col < (width + paddingWidthLeft); col++) {
-                image_colors[row + paddingHeightTop][col] = image.getPixel(row, col - paddingWidthLeft);
+            for (int col = 0; col < width ; col++) {
+                image_colors[row + paddingHeightTop][col+ paddingWidthLeft] = image.getPixel(row, col );
             }
         }
         // Fill the left and right padded regions with white color

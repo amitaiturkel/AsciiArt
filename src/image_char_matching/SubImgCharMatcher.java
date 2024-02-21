@@ -10,7 +10,7 @@ import java.util.*;
  * A class that handles matching characters based on their brightness levels.
  */
 public class SubImgCharMatcher {
-    // TODO: save max and min charBrightness and update them in O1 in add and in On in remove
+    // TODO: save max and min charBrightness and update them in O(1) in add and in O(n) in remove
     private Set<Character> myCharSet = new HashSet<>();
     private Map<Character, Double> charBrightnessMapBeforeStratch = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class SubImgCharMatcher {
         int sum = 0;
         boolean[][] boolArray = CharConverter.convertToBoolArray(c);
         for (int row = 0; row < CharConverter.DEFAULT_PIXEL_RESOLUTION; row++) {
-            for (int col = 0; row < CharConverter.DEFAULT_PIXEL_RESOLUTION; col++) {
+            for (int col = 0; col < CharConverter.DEFAULT_PIXEL_RESOLUTION; col++) {
                 if (boolArray[row][col]) {
                     sum += 1;
                 }
