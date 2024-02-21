@@ -9,12 +9,13 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        // Example usage within the AsciiArtAlgorithm class
-        String imagePath = "C:/Users/home/Desktop/study/second year/OOP/AsciiArt/cat.jpeg";
         int resolution = 256;
         char[] charsets1 = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         char startChar = ' ';
         char endChar = '~';
+        String imagePath = "board.jpeg";
+        int resolution = 2;
+        char[] charsets = {'m', 'o'};
 
         int arraySize = endChar - startChar + 1;
         char[] charArray = new char[arraySize];
