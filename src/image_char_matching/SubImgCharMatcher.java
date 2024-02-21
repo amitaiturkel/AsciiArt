@@ -149,9 +149,9 @@ public class SubImgCharMatcher {
      * @return the average brightness of the image.
      */
     public double subImageBrightness(Image image, int rows, int cols) {
-        double max_char = -1;
-        double min_char = 17;
+
         Color[][] image_as_color = ImageOperator.ImageToColorArray(image);
+
 
         double sum = 0;
         for (int row = 0; row < rows; row++) {
@@ -159,6 +159,6 @@ public class SubImgCharMatcher {
                 sum += ImageOperator.colorToGray(image_as_color[row][col]);
             }
         }
-        return sum / (image.getWidth() * image.getHeight()) * 255;
+        return sum / ((image.getWidth() * image.getHeight()) * 255);
     }
 }
