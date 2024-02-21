@@ -57,6 +57,9 @@ public class ImageOperator {
 
         for (int row = 0; row < subImageHeight; row++) {
             for (int col = 0; col < subImageWidth; col++) {
+                if (col >193){
+                    int a = 1;
+                }
                 subImage[row][col] = image.getPixel(clippedStartRow + row, clippedStartCol + col);
             }
         }
@@ -130,8 +133,13 @@ public class ImageOperator {
      * @return Grayscale value.
      */
     public static double colorToGray(Color color) {
+        if (color == null) {
+            throw new IllegalArgumentException("Color cannot be null");
+        }
+
         return color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
     }
+
 
     /**
      * Calculates the average brightness of an entire image.
@@ -196,7 +204,7 @@ public class ImageOperator {
         // Copy original image to the new array with symmetrical padding
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width ; col++) {
-                image_colors[row + paddingHeightTop][col+ paddingWidthLeft] = image.getPixel(row, col );
+                image_colors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
             }
         }
         // Fill the left and right padded regions with white color
@@ -206,12 +214,28 @@ public class ImageOperator {
                 image_colors[row][col] = Color.WHITE;
             }
             // Fill right side
-            for (int col = (width + paddingWidthLeft); col < (new_width); col++) {
+            for (int col = (width + paddingWidthLeft); col < new_width; col++) {
                 image_colors[row][col] = Color.WHITE;
             }
         }
+        // Fill the top and bottom padded regions with white color
+        for (int row = 0; row < paddingHeightTop; row++) {
+            // Fill top side
+            for (int col = 0; col < new_width; col++) {
+                image_colors[row][col] = Color.WHITE;
+            }
+        }
+
+        for (int row = (height + paddingHeightTop); row < new_height; row++) {
+            // Fill bottom side
+            for (int col = 0; col < new_width; col++) {
+                image_colors[row][col] = Color.WHITE;
+            }
+        }
+
         return new Image(image_colors, new_width, new_height);
     }
+
 
     /**
      * Finds the next power of two for a given number.
