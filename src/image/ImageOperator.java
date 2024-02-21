@@ -142,23 +142,6 @@ public class ImageOperator {
 
 
     /**
-     * Calculates the average brightness of an entire image.
-     *
-     * @param image The image for which average brightness is calculated.
-     * @return Average brightness value of the image.
-     */
-    public static double ImageBrightness(Image image) {
-        Color[][] imageColors = ImageToColorArray(padding(image)); // if already padded doesn't do anything
-        double sum = 0;
-        for (int row = 0; row < image.getHeight(); row++) {
-            for (int col = 0; col < image.getWidth(); col++) {
-                sum += colorToGray(imageColors[row][col]);
-            }
-        }
-        return sum / (image.getHeight() * image.getWidth() * 255);
-    }
-
-    /**
      * Converts an Image object to a 2D array of Color objects.
      *
      * @param image The Image object to convert.
@@ -172,12 +155,6 @@ public class ImageOperator {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                Color c = image.getPixel(row, col);
-                if (c == null){
-                    System.out.print(row);
-                    System.out.println(col);
-
-                }
                 imageColors[row][col] = image.getPixel(row, col);
             }
         }

@@ -128,11 +128,16 @@ public class SubImgCharMatcher {
         int min = (int) 'Z';
         double min_dis = 10001;
         for (Character c : charBrightnessMapBeforeStratch.keySet()) {
-            if (Math.abs(brightness - charToDouble(c)) <= min_dis) {
-                if (Math.abs(brightness - charToDouble(c)) == min_dis) {
+            double current_dis = Math.abs(brightness - charToDouble(c));
+            if (current_dis <= min_dis) {
+                if (current_dis == min_dis) {
                     min = Math.min(min, c);
+                    min_dis= current_dis ;
+
                 } else {
                     min = c;
+                    min_dis= current_dis ;
+
                 }
 
             }
@@ -149,10 +154,7 @@ public class SubImgCharMatcher {
      * @return the average brightness of the image.
      */
     public double subImageBrightness(Image image, int rows, int cols) {
-
         Color[][] image_as_color = ImageOperator.ImageToColorArray(image);
-
-
         double sum = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
