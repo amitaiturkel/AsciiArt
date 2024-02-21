@@ -128,8 +128,8 @@ public class SubImgCharMatcher {
         int min = (int) 'Z';
         double min_dis = 10001;
         for (Character c : charBrightnessMapBeforeStratch.keySet()) {
-            if (Math.abs(brightness - charBrightnessMapBeforeStratch.get(c)) <= min_dis) {
-                if (Math.abs(brightness - charBrightnessMapBeforeStratch.get(c)) == min_dis) {
+            if (Math.abs(brightness - charToDouble(c)) <= min_dis) {
+                if (Math.abs(brightness - charToDouble(c)) == min_dis) {
                     min = Math.min(min, c);
                 } else {
                     min = c;
