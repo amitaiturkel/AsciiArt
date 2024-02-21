@@ -6,7 +6,6 @@ import image.ImageOperator;
 import java.awt.Color;
 import java.util.*;
 
-import static java.lang.Math.max;
 
 /**
  * A class that handles matching characters based on their brightness levels.
@@ -17,7 +16,7 @@ public class SubImgCharMatcher {
     private double minCharValue;
     private double maxCharValue;
     private char minChar;
-    private char maxChar;
+        private char maxChar;
 
 
     /*
@@ -155,25 +154,24 @@ public class SubImgCharMatcher {
      * @return the character that matches the brightness level.
      */
     public char getCharByImageBrightness(double brightness) {
-        int min = (int) 'Z';
-        double min_dis = 10001;
-        for (Character c : charBrightnessMapBeforeStratch.keySet()) {
-            double current_dis = Math.abs(brightness - charToDouble(c));
-            if (current_dis <= min_dis) {
-                if (current_dis == min_dis) {
-                    min = Math.min(min, c);
-                    min_dis= current_dis ;
+        char closestChar = 'Z';
+        double minDis = 10001;
 
-                } else {
-                    min = c;
-                    min_dis= current_dis ;
+        for (Map.Entry<Character, Double> entry : charBrightnessMapBeforeStratch.entrySet()) {
+            double currentDis = Math.abs(brightness - entry.getValue());
+            if (currentDis == 0) {
+                return entry.getKey(); // Early exit if brightness matches exactly.
+            }
 
-                }
-
+            if (currentDis < minDis) {
+                closestChar = entry.getKey();
+                minDis = currentDis;
             }
         }
-        return (char) min;
+
+        return closestChar;
     }
+
 
 
 
