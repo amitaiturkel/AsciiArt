@@ -30,14 +30,19 @@ public class AsciiArtAlgorithm {
     }
 
     public char[][] run() {
+
         char[][] asciiImage = new char[subImageRows][subImageCols];
         for (int row = 0; row < subImageRows; row++) {
             for (int col = 0; col < subImageCols; col++) {
+
                 double subImageBrightness = ImageOperator.ImageBrightness(subImagesArray[row][col]);
+
                 asciiImage[row][col] = charMatcher.getCharByImageBrightness(subImageBrightness);
 
             }
         }
+
+
         return asciiImage;
     }
 
