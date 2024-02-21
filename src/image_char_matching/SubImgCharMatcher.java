@@ -6,6 +6,8 @@ import image.ImageOperator;
 import java.awt.Color;
 import java.util.*;
 
+import static java.lang.Math.max;
+
 /**
  * A class that handles matching characters based on their brightness levels.
  */
@@ -13,6 +15,39 @@ public class SubImgCharMatcher {
     // TODO: save max and min charBrightness and update them in O(1) in add and in O(n) in remove
     private Set<Character> myCharSet = new HashSet<>();
     private Map<Character, Double> charBrightnessMapBeforeStratch = new HashMap<>();
+    private double minCharValue;
+    private double maxCharValue;
+    private char minChar;
+    private char maxChar;
+
+
+    /*
+    Gets a char checks if it's min and if so updates the attributes
+     */
+    private void updateMin(char c) {
+        if (minCharValue > charBrightness(c)) {
+            minCharValue = charBrightness(c);
+            minChar = c;
+        }
+    }
+
+    /*
+    Gets a char checks if it's max and if so updates the attributes
+     */
+    private void updateMax(char c) {
+        if (maxCharValue < charBrightness(c)) {
+            maxCharValue = charBrightness(c);
+            maxChar = c;
+        }
+    }
+
+    /*
+    Gets a char checks if it's min or max and if so updates the attributes
+     */
+    private void updateMinMax(char c) {
+        updateMin(c);
+        updateMax(c);
+    }
 
     /**
      * Constructor for SubImgCharMatcher.
@@ -20,11 +55,15 @@ public class SubImgCharMatcher {
      * @param charset an array of characters to initialize the character set.
      */
     public SubImgCharMatcher(char[] charset) {
+        minCharValue = charBrightness(charset[0]);
+        maxCharValue = 0;
         for (char c : charset) {
             myCharSet.add(c);
             charBrightnessMapBeforeStratch.put(c, charBrightness(c));
+            updateMinMax(c);
         }
     }
+
 
     /**
      * Calculates the brightness of a character.
@@ -106,6 +145,7 @@ public class SubImgCharMatcher {
     public void addChar(char c) {
         myCharSet.add(c);
         charBrightnessMapBeforeStratch.put(c, charBrightness(c));
+        updateMinMax(c);
     }
 
     /**
@@ -116,6 +156,17 @@ public class SubImgCharMatcher {
     public void removeChar(char c) {
         myCharSet.remove(c);
         charBrightnessMapBeforeStratch.remove(c, charBrightness(c));
+        if (c == minChar) {
+            for (char c1 : myCharSet) {
+                updateMin(c1);
+            }
+        }
+
+        if (c == maxChar) {
+            for (char c1 : myCharSet) {
+                updateMax(c1);
+            }
+        }
     }
 
     /**
