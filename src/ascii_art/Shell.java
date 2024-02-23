@@ -1,4 +1,7 @@
 package ascii_art;
+import ascii_output.AsciiOutput;
+import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
 import image.Image;
 
 import java.io.IOException;
@@ -7,20 +10,62 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.Collections.addAll;
+
 public class Shell {
 
     // constants
+
+        // used in runAsciiArtAlgorithm
+    private static final String FONT = "Courier New";
+
+        // used in run
+    private static final String UNIDENTIFIED_COMMAND = "Did not execute due to incorrect command.";
+
+        // used in chooseOutput
+    private static final int OUTPUT_PLUS_ANOTHER_WORD = 8;
+    private static final int BEGINNING_OF_SECOND_WORD_OF_OUTPUT = 7;
+    private static final String INCORRECT_OUTPUT_INPUT = "Did not change output method due to incorrect format.";
+
+        // used in selectImageFile
+    private static final int IMAGE_PLUS_ANOTHER_WORD = 7;
+    private static final int BEGINNING_OF_SECOND_WORD_OF_IMAGE = 6;
+    private static final String ERROR_PRINTING_IMAGE = "Did not execute due to problem with image file.";
+
+        // used in controlResolution
+    private static final int RES_PLUS_UP = 6;
+    private static final int RES_PLUS_DOWN = 8;
+    private static final int UP_DOWN_INDEX = 4;
+    private static final String INCORRECT_RES_INPUT = "Did not change resolution due to incorrect format.";
+
+        // used in checkIfAddStringValid
     private static final int ADD_PLUS_CHAR = 5;
-    private static final int CHAR_TO_CHAR = 3;
+    private static final int TO_ADD_INDEX = 4;
+    private static final String INCORRECT_ADD_INPUT = "Did not add due to incorrect format.";
+
+        // used in checkIfRemoveStringValid
+    private static final int REMOVE_PLUS_CHAR = 8;
+    private static final int TO_REMOVE_INDEX = 7;
+    private static final String INCORRECT_REMOVE_INPUT = "Did not remove due to incorrect format.";
+
+        // used in IsStringInFormatCharToChar
+    private static final int CHAR_TO_CHAR_LENGTH = 3;
+
+    // attributes
 
     private Image image = new Image("cat.jpeg");
     private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     private int resolution = 128;
     private String input;
-    private String[] commands = {"exit", "chars", "add", "remove", "res", "image", "output", "asciiArt"};
+    private String outputMethod = "console";
+    private String imageName = "cat";
+
+    // constructor
 
     private Shell() throws IOException {
     }
+
+    // methods
 
     public void run() {
         KeyboardInput keyboardInput = KeyboardInput.getObject();
@@ -29,7 +74,7 @@ public class Shell {
 
         while (!Objects.equals(input, "exit")) {
 
-            String command = extractFirstWord(input);
+            String command = extractFirstWordOfInput();
             switch (command) {
                 case "chars":
                     viewCharSet();
@@ -53,7 +98,7 @@ public class Shell {
                     runAsciiArtAlgorithm();
                     break;
                 default:
-                    System.out.println("Invalid command. Please try again.");
+                    System.out.println(UNIDENTIFIED_COMMAND);
             }
             System.out.print(">>> ");
             input = KeyboardInput.readLine();
@@ -61,9 +106,208 @@ public class Shell {
         System.exit(0);
     }
 
-    private static String extractFirstWord(String input) {
-        // Trim leading and trailing whitespace
-        input = input.trim();
+    // the commends methods
+
+    /*
+     * Sorts the characters in the charSet and prints them to the console.
+     */
+    private void viewCharSet() {
+        char[] sortedCharArray = sortCharSetByAscii(charSet);
+        printCharArray(sortedCharArray);
+    }
+
+    private void addCharacters() {
+
+        // Checks if the input is in a format of "add" + space + something
+        if (!checkIfStringValid(input, "add")) {
+            return;
+        }
+
+        // extract from input the thing the user wants to add
+        String toAdd = input.substring(TO_ADD_INDEX);
+
+        // the user entered "add <char>"
+        if (toAdd.length() == 1) {
+            char c = input.charAt(TO_ADD_INDEX);
+            charSet.add(c);
+            return;
+        }
+
+        // the user entered "add <char>-<char>"
+        if (IsStringInFormatCharToChar(toAdd)) {
+            addOrRemoveFromCharToChar(toAdd, "add");
+            return;
+        }
+
+        // the user entered "add all"
+        if (toAdd.equals("all")) {
+            addAll();
+            return;
+        }
+
+        // the user entered "add space"
+        if (toAdd.equals("space")) {
+            charSet.add(' ');
+            return;
+        }
+
+        // the user hasn't entered any of the valid options
+        System.out.println(INCORRECT_ADD_INPUT);
+    }
+
+    private void removeCharacters() {
+
+        // Checks if the input is in a format of "remove" + space + something
+        if (!checkIfStringValid(input, "remove")) {
+            return;
+        }
+
+        // extract from input the thing the user wants to remove
+        String toRemove = input.substring(TO_REMOVE_INDEX);
+
+        // the user entered "remove <char>"
+        if (toRemove.length() == 1) {
+            char c = input.charAt(TO_REMOVE_INDEX);
+            charSet.remove(c);
+            return;
+        }
+
+        // the user entered "remove <char>-<char>"
+        if (IsStringInFormatCharToChar(toRemove)) {
+            addOrRemoveFromCharToChar(toRemove, "remove");
+            return;
+        }
+
+        // the user entered "remove all"
+        if (toRemove.equals("all")) {
+            charSet.clear();
+            return;
+        }
+
+        // the user entered "remove space"
+        if (toRemove.equals("space")) {
+            charSet.remove(' ');
+            return;
+        }
+
+        // the user hasn't entered any of the valid options
+        System.out.println(INCORRECT_REMOVE_INPUT);
+    }
+
+    private void controlResolution() {
+
+        // check if the input is at the size "res up"
+        if (input.length() == RES_PLUS_UP) {
+
+            // check if the input is "res up"
+            if (input.substring(UP_DOWN_INDEX).equals("up")) {
+                resolution *= 2;
+                System.out.println("Resolution set to " + resolution + ".");
+                return;
+            }
+            System.out.println(INCORRECT_RES_INPUT);
+            return;
+        }
+
+        // check if the input is "res down"
+        if (input.length() == RES_PLUS_DOWN) {
+
+            // check if the input is "res down"
+            if (input.substring(UP_DOWN_INDEX).equals("down")) {
+                resolution /= 2;
+                System.out.println("Resolution set to " + resolution + ".");
+                return;
+            }
+            System.out.println(INCORRECT_RES_INPUT);
+        }
+
+        2.6.5 עם משהו לעשות
+    }
+
+    private void selectImageFile() {
+        // check if input is too short
+        if (input.length() < IMAGE_PLUS_ANOTHER_WORD) {
+            System.out.println(ERROR_PRINTING_IMAGE);
+            ?משהו פה לזרוק צריך
+        }
+
+        String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
+        image = new Image(imageString);
+        ?תופסים איפה
+    }
+
+    private void chooseOutput() {
+        // check if input is too short
+        if (input.length() < OUTPUT_PLUS_ANOTHER_WORD) {
+            System.out.println(INCORRECT_OUTPUT_INPUT);
+        }
+
+        String output = input.substring(BEGINNING_OF_SECOND_WORD_OF_OUTPUT);
+
+        if (output.equals("console") || output.equals("html")) {
+            outputMethod = output;
+        } else {
+            System.out.println(INCORRECT_OUTPUT_INPUT);
+        }
+    }
+
+    private void runAsciiArtAlgorithm() {
+
+        char[] charArray = setToArray(charSet);
+
+        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
+
+        char[][] asciiImage = asciiArtAlgorithm.run();
+
+        AsciiOutput consoleAsciiOutput;
+
+        switch (outputMethod) {
+            case ("console"):
+                consoleAsciiOutput = new ConsoleAsciiOutput();
+                break;
+
+            case ("html"):
+                consoleAsciiOutput = new HtmlAsciiOutput(imageName + ".html",FONT);
+                break;
+
+            default:
+                consoleAsciiOutput = new ConsoleAsciiOutput();
+        }
+        consoleAsciiOutput.out(asciiImage);
+    }
+
+
+    // Auxiliary functions
+
+    /*
+     * Adds all possible characters from ASCII 32 (space) to ASCII 126 (tilde) into the charSet.
+     */
+    public void addAll() {
+        for (int i = 32; i <= 126; i++) {
+            charSet.add((char) i);
+        }
+    }
+
+    /*
+     * Converts a Set of Character elements into a char array.
+     */
+    private char[] setToArray(Set<Character> set) {
+
+        // Create a char array with the size of the set
+        char[] charArray = new char[charSet.size()];
+
+        // Convert charSet to charArray
+        int i = 0;
+        for (char c : charSet) {
+            charArray[i++] = c;
+        }
+        return charArray;
+    }
+
+    /*
+     * Extracts the first word from the input string.
+     */
+     private String extractFirstWordOfInput() {
 
         // Find the index of the first space
         int index = input.indexOf(' ');
@@ -81,7 +325,7 @@ public class Shell {
      * Sorts a Set of characters by their ASCII values and returns them as a char[] array.
      * a sub function of viewCharSet.
      */
-    private static char[] sortCharSetByAscii(Set<Character> charSet) {
+    private char[] sortCharSetByAscii(Set<Character> charSet) {
         // Convert the Set<Character> to a char[] array
         char[] charArray = new char[charSet.size()];
         int index = 0;
@@ -99,63 +343,147 @@ public class Shell {
      * Prints the elements of a char[] array to the console.
      * a sub function of viewCharSet.
      */
-     private void printCharArray(char[] array) {
+    private void printCharArray(char[] array) {
             for (char c : array) {
                 System.out.print(c + " ");
             }
         }
 
     /*
-     * Sorts the characters in the charSet and prints them to the console.
+     * Checks if the input string is valid for adding an item.
+     * a sub function of addCharacters.
+     *
+     * if it is not valid the function will print a message and return false.
+     * otherwise it will return true.
      */
-    private void viewCharSet() {
-        char[] sortedCharArray = sortCharSetByAscii(charSet);
-        printCharArray(sortedCharArray);
-    }
-
-    private void addCharacters() {
+    private boolean checkIfAddStringValid(String input) {
 
         // the user entered just "add" or "add "
         if (input.length() < ADD_PLUS_CHAR) {
-            System.out.println("Did not add due to incorrect format.");
-            return;
+            System.out.println(INCORRECT_ADD_INPUT);
+            return false;
         }
 
         // extract from input the thing the user wants to add
-        String toAdd = input.substring(4);
+        String toAdd = input.substring(TO_ADD_INDEX);
 
         // toAdd should not contain " "
         if (toAdd.contains(" ")) {
-            System.out.println("Did not add due to incorrect format.");
-            return;
+            System.out.println(INCORRECT_ADD_INPUT);
+            return false;
         }
 
-        // the user entered "add <char>"
-        if (toAdd.length() == 1) {
-            char c = input.charAt(4);
-            // TOD0
-            // add the char
+        return true;
+    }
+
+    /*
+     * Checks if the input string is valid for removing an item.
+     * a sub function of addCharacters.
+     *
+     * if it is not valid the function will print a message and return false.
+     * otherwise it will return true.
+     */
+    private boolean checkIfRemoveStringValid(String input) {
+
+        // the user entered just "remove" or "remove "
+        if (input.length() < REMOVE_PLUS_CHAR) {
+            System.out.println(INCORRECT_REMOVE_INPUT);
+            return false;
         }
 
-        // the user entered "add <char>-<char>"
-        if (IsStringInFormatCharToChar(toAdd)) {
-            // TODO
+        // extract from input the thing the user wants to remove
+        String toRemove = input.substring(TO_REMOVE_INDEX);
+
+        // toRemove should not contain " "
+        if (toRemove.contains(" ")) {
+            System.out.println(INCORRECT_REMOVE_INPUT);
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * Checks if the input string is valid for adding or removing an item.
+     * a sub function of addCharacters and of removeCharacters.
+     *
+     * if it is not valid the function will print a message and return false.
+     * otherwise it will return true.
+     */
+    private boolean checkIfStringValid(String input, String addOrRemove) {
+
+        int minLength = 0;
+        String invalidMessage = "";
+        int AddOrRemoveIndex = 0;
+
+        switch (addOrRemove) {
+            case ("add"):
+                minLength = ADD_PLUS_CHAR;
+                invalidMessage = INCORRECT_ADD_INPUT;
+                AddOrRemoveIndex = TO_ADD_INDEX;
+                break;
+
+            case ("remove"):
+                minLength = REMOVE_PLUS_CHAR;
+                invalidMessage = INCORRECT_REMOVE_INPUT;
+                AddOrRemoveIndex = TO_REMOVE_INDEX;
+                break;
+        }
+
+        // the user entered just "add" or "add " / "remove" or "remove "
+        if (input.length() < minLength) {
+            System.out.println(invalidMessage);
+            return false;
+        }
+
+        // extract from input the thing the user wants to add / remove
+        String toAddOrRemove = input.substring(AddOrRemoveIndex);
+
+        // toAddOrRemove should not contain " "
+        if (toAddOrRemove.contains(" ")) {
+            System.out.println(invalidMessage);
+            return false;
+        }
+        return true;
+    }
+
+    private void addOrRemoveFromCharToChar(String toAddOrToRemove, String addOrRemove) {
+
+        char first = toAddOrToRemove.charAt(0);
+        char second = toAddOrToRemove.charAt(2);
+
+        // Ensure first holds the smaller character and second holds the larger character
+        if (first > second) {
+            char temp = first;
+            first = second;
+            second = temp;
+        }
+
+        while (first < second) {
+            if (addOrRemove.equals("add")) {
+                charSet.add(first);
+            } else if (addOrRemove.equals("remove")) {
+                charSet.remove(first);
+            }
+            first++;
         }
     }
 
     /*
      * Checks if the given string is in the format "<char>-<char>".
      */
-    private boolean IsStringInFormatCharToChar(String toAdd) {
+    private boolean IsStringInFormatCharToChar(String toAddOrRemove) {
         // checks if the string is in the right length
-        if (toAdd.length() != CHAR_TO_CHAR) {
+        if (toAddOrRemove.length() != CHAR_TO_CHAR_LENGTH) {
             return false;
         }
         // checks if there's a '-' in the second char
-        if (toAdd.charAt(1) != '-') {
+        if (toAddOrRemove.charAt(1) != '-') {
             return false;
         }
 
         return true;
     }
+
+
+
 }
