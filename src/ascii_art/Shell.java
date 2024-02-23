@@ -62,12 +62,12 @@ public class Shell {
 
     // constructor
 
-    private Shell() throws IOException {
+    public Shell() throws IOException {
     }
 
     // methods
 
-    public void run() {
+    public void run() throws IOException {
         KeyboardInput keyboardInput = KeyboardInput.getObject();
         System.out.print(">>> ");
         input = KeyboardInput.readLine();
@@ -221,19 +221,19 @@ public class Shell {
             System.out.println(INCORRECT_RES_INPUT);
         }
 
-        2.6.5 עם משהו לעשות
+        // 2.6.5 עם משהו לעשות
     }
 
-    private void selectImageFile() {
+    private void selectImageFile() throws IOException {
         // check if input is too short
         if (input.length() < IMAGE_PLUS_ANOTHER_WORD) {
             System.out.println(ERROR_PRINTING_IMAGE);
-            ?משהו פה לזרוק צריך
+            //?משהו פה לזרוק צריך
         }
 
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
         image = new Image(imageString);
-        ?תופסים איפה
+        //?תופסים איפה
     }
 
     private void chooseOutput() {
