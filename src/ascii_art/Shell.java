@@ -60,10 +60,15 @@ public class Shell {
     private String input;
     private String outputMethod = "console";
     private String imageName = "cat";
+    private AsciiArtAlgorithm asciiArtAlgorithm;
+    private boolean changedCharSet;
 
     // constructor
 
     public Shell() throws IOException {
+        char[] charArray = setToArray(charSet);
+        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
+        changedCharSet = false;
     }
 
     // methods
@@ -132,6 +137,7 @@ public class Shell {
         if (toAdd.length() == 1) {
             char c = input.charAt(TO_ADD_INDEX);
             charSet.add(c);
+            asciiArtAlgorithm.addChar(c);
             return;
         }
         // TODO: if else?
@@ -151,6 +157,7 @@ public class Shell {
         // the user entered "add space"
         if (toAdd.equals("space")) {
             charSet.add(' ');
+            asciiArtAlgorithm.addChar(' ');
             return;
         }
 
@@ -183,6 +190,9 @@ public class Shell {
 
         // the user entered "remove all"
         if (toRemove.equals("all")) {
+            for(char c :charSet){
+                asciiArtAlgorithm.removeChar(c);
+            }
             charSet.clear();
             return;
         }
@@ -190,6 +200,8 @@ public class Shell {
         // the user entered "remove space"
         if (toRemove.equals("space")) {
             charSet.remove(' ');
+            asciiArtAlgorithm.removeChar(' ');
+
             return;
         }
 
@@ -205,6 +217,7 @@ public class Shell {
             // check if the input is "res up"
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
                 resolution *= 2;
+                asciiArtAlgorithm.changeResolution(resolution);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -218,6 +231,7 @@ public class Shell {
             // check if the input is "res down"
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
                 resolution /= 2;
+                asciiArtAlgorithm.changeResolution(resolution);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -258,9 +272,7 @@ public class Shell {
         // TODO: do we need everytime create a new asciiAlgo or we can just change few things?
         // TODO: like just update the array and same the brightness of the sub images there brightnees?
         //
-        char[] charArray = setToArray(charSet);
 
-        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
 
         char[][] asciiImage = asciiArtAlgorithm.run();
 
@@ -290,6 +302,7 @@ public class Shell {
     public void addAll() {
         for (int i = 32; i <= 126; i++) {
             charSet.add((char) i);
+            asciiArtAlgorithm.addChar((char) i);
         }
     }
 
@@ -466,8 +479,10 @@ public class Shell {
         while (first < second) {
             if (addOrRemove.equals("add")) {
                 charSet.add(first);
+                asciiArtAlgorithm.addChar(first);
             } else if (addOrRemove.equals("remove")) {
                 charSet.remove(first);
+                asciiArtAlgorithm.removeChar(first);
             }
             first++;
         }
