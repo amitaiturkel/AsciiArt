@@ -52,6 +52,7 @@ public class Shell {
     private static final int CHAR_TO_CHAR_LENGTH = 3;
 
     // attributes
+    //TODO why not in the constractor?
 
     private Image image = new Image("cat.jpeg");
     private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
@@ -94,6 +95,7 @@ public class Shell {
                 case "output":
                     chooseOutput();
                     break;
+                    //TODO: make case sensetive?
                 case "asciiart":
                     runAsciiArtAlgorithm();
                     break;
@@ -132,6 +134,7 @@ public class Shell {
             charSet.add(c);
             return;
         }
+        // TODO: if else?
 
         // the user entered "add <char>-<char>"
         if (IsStringInFormatCharToChar(toAdd)) {
@@ -164,7 +167,7 @@ public class Shell {
 
         // extract from input the thing the user wants to remove
         String toRemove = input.substring(TO_REMOVE_INDEX);
-
+        // TODO: if else?
         // the user entered "remove <char>"
         if (toRemove.length() == 1) {
             char c = input.charAt(TO_REMOVE_INDEX);
@@ -252,7 +255,9 @@ public class Shell {
     }
 
     private void runAsciiArtAlgorithm() {
-
+        // TODO: do we need everytime create a new asciiAlgo or we can just change few things?
+        // TODO: like just update the array and same the brightness of the sub images there brightnees?
+        //
         char[] charArray = setToArray(charSet);
 
         AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
