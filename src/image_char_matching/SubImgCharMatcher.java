@@ -150,20 +150,23 @@ public class SubImgCharMatcher {
      */
     public void removeChar(char c) {
         myCharSet.remove(c);
-        charBrightnessMapBeforeStratch.remove(c, charBrightness(c));
+        FinalcharBrightness.remove(c);
+        charBrightnessMapBeforeStratch.remove(c, charBrightness(c))
+        ;
         if (c == minChar) {
             for (char c1 : myCharSet) {
                 updateMin(c1);
             }
-            createFinalMap();
+
         }
 
         if (c == maxChar) {
             for (char c1 : myCharSet) {
                 updateMax(c1);
-                createFinalMap();
+
             }
         }
+        createFinalMap();
     }
 
     /**

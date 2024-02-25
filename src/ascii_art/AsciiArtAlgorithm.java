@@ -46,6 +46,7 @@ public class AsciiArtAlgorithm {
     public void changeResolution(int res) {
         if (res != resolution) {
             subImagesArray = ImageOperator.createSubImageArray(orignalImage, res);
+            resolution =res;
             int imageWidth = orignalImage.getWidth();
             int imageHeight = orignalImage.getHeight();
             // Calculate the size of each sub-image based on the desired resolution

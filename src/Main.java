@@ -18,9 +18,9 @@ public class Main {
 //        consoleAsciiOutput.out(asciiImage);
 
         // Run the algorithm to generate ASCII art
-        //Shell shell = new Shell();
+        Shell shell = new Shell();
 
         // Run the shell
-        //shell.run();
+        shell.run();
     }
 }

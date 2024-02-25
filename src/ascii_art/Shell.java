@@ -179,6 +179,7 @@ public class Shell {
         if (toRemove.length() == 1) {
             char c = input.charAt(TO_REMOVE_INDEX);
             charSet.remove(c);
+            asciiArtAlgorithm.removeChar(c);
             return;
         }
 
