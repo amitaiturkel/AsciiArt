@@ -39,7 +39,11 @@ public class ImageOperator {
      * @param endCol     Ending column index of the sub-image.
      * @return 2D array representing the sub-image.
      */
-    public static Color[][] getSubImage(Image image, int startRow, int endRow, int startCol, int endCol) {
+    public static Color[][] getSubImage(Image image,
+                                        int startRow,
+                                        int endRow,
+                                        int startCol,
+                                        int endCol) {
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
 
@@ -105,7 +109,6 @@ public class ImageOperator {
         }
         return subImagesArray;
     }
-
 
     /**
      * Converts a Color object to its corresponding grayscale value.
@@ -207,7 +210,6 @@ public class ImageOperator {
 
         return new Image(image_colors, new_width, new_height);
     }
-
 
     /**
      * Finds the next power of two for a given number.

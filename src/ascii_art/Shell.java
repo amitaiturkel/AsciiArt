@@ -16,8 +16,9 @@ public class Shell {
 
     // constants
 
-        // used in runAsciiArtAlgorithm
+    // used in runAsciiArtAlgorithm
     private static final String FONT = "Courier New";
+    private static final String EMPTY_CHAR_SET = "Did not execute. Charset is empty.";
 
         // used in run
     private static final String UNIDENTIFIED_COMMAND = "Did not execute due to incorrect command.";
@@ -101,7 +102,7 @@ public class Shell {
                     chooseOutput();
                     break;
                     //TODO: make case sensetive?
-                case "asciiart":
+                case "asciiArt":
                     runAsciiArtAlgorithm();
                     break;
                 default:
@@ -140,7 +141,6 @@ public class Shell {
             asciiArtAlgorithm.addChar(c);
             return;
         }
-        // TODO: if else?
 
         // the user entered "add <char>-<char>"
         if (IsStringInFormatCharToChar(toAdd)) {
@@ -270,10 +270,12 @@ public class Shell {
     }
 
     private void runAsciiArtAlgorithm() {
-        // TODO: do we need everytime create a new asciiAlgo or we can just change few things?
-        // TODO: like just update the array and same the brightness of the sub images there brightnees?
-        //
 
+        // if the charSet is empty, an error message will be printed
+        if (charSet.isEmpty()) {
+            System.out.println(EMPTY_CHAR_SET);
+            return;
+        }
 
         char[][] asciiImage = asciiArtAlgorithm.run();
 
@@ -291,6 +293,7 @@ public class Shell {
             default:
                 consoleAsciiOutput = new ConsoleAsciiOutput();
         }
+
         consoleAsciiOutput.out(asciiImage);
     }
 
