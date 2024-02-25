@@ -52,17 +52,23 @@ public class Shell {
     private static final int CHAR_TO_CHAR_LENGTH = 3;
 
     // attributes
+    //TODO why not in the constractor?
 
     private Image image = new Image("cat.jpeg");
     private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     private int resolution = 128;
     private String input;
-    private String outputMethod = "html";
+    private String outputMethod = "console";
     private String imageName = "cat";
+    private AsciiArtAlgorithm asciiArtAlgorithm;
+    private boolean changedCharSet;
 
     // constructor
 
     public Shell() throws IOException {
+        char[] charArray = setToArray(charSet);
+        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
+        changedCharSet = false;
     }
 
     // methods
@@ -94,7 +100,8 @@ public class Shell {
                 case "output":
                     chooseOutput();
                     break;
-                case "asciiArt":
+                    //TODO: make case sensetive?
+                case "asciiart":
                     runAsciiArtAlgorithm();
                     break;
                 default:
@@ -130,8 +137,10 @@ public class Shell {
         if (toAdd.length() == 1) {
             char c = input.charAt(TO_ADD_INDEX);
             charSet.add(c);
+            asciiArtAlgorithm.addChar(c);
             return;
         }
+        // TODO: if else?
 
         // the user entered "add <char>-<char>"
         if (IsStringInFormatCharToChar(toAdd)) {
@@ -148,6 +157,7 @@ public class Shell {
         // the user entered "add space"
         if (toAdd.equals("space")) {
             charSet.add(' ');
+            asciiArtAlgorithm.addChar(' ');
             return;
         }
 
@@ -164,11 +174,12 @@ public class Shell {
 
         // extract from input the thing the user wants to remove
         String toRemove = input.substring(TO_REMOVE_INDEX);
-
+        // TODO: if else?
         // the user entered "remove <char>"
         if (toRemove.length() == 1) {
             char c = input.charAt(TO_REMOVE_INDEX);
             charSet.remove(c);
+            asciiArtAlgorithm.removeChar(c);
             return;
         }
 
@@ -180,6 +191,9 @@ public class Shell {
 
         // the user entered "remove all"
         if (toRemove.equals("all")) {
+            for(char c :charSet){
+                asciiArtAlgorithm.removeChar(c);
+            }
             charSet.clear();
             return;
         }
@@ -187,6 +201,8 @@ public class Shell {
         // the user entered "remove space"
         if (toRemove.equals("space")) {
             charSet.remove(' ');
+            asciiArtAlgorithm.removeChar(' ');
+
             return;
         }
 
@@ -202,6 +218,7 @@ public class Shell {
             // check if the input is "res up"
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
                 resolution *= 2;
+                asciiArtAlgorithm.changeResolution(resolution);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -215,6 +232,7 @@ public class Shell {
             // check if the input is "res down"
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
                 resolution /= 2;
+                asciiArtAlgorithm.changeResolution(resolution);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -234,8 +252,6 @@ public class Shell {
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
         image = new Image(imageString);
         //?תופסים איפה
-
-        imageName = removeDotJpeg(imageString);
     }
 
     private void chooseOutput() {
@@ -254,10 +270,10 @@ public class Shell {
     }
 
     private void runAsciiArtAlgorithm() {
+        // TODO: do we need everytime create a new asciiAlgo or we can just change few things?
+        // TODO: like just update the array and same the brightness of the sub images there brightnees?
+        //
 
-        char[] charArray = setToArray(charSet);
-
-        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
 
         char[][] asciiImage = asciiArtAlgorithm.run();
 
@@ -282,31 +298,12 @@ public class Shell {
     // Auxiliary functions
 
     /*
-     * Removes the file extension from the input filename if it exists.
-     * If the input filename does not contain a dot ('.') character,
-     * returns the original filename unchanged.
-     */
-    private String removeDotJpeg(String imageDotJpeg) {
-        // Find the index of the dot ('.') character
-        int dotIndex = imageDotJpeg.lastIndexOf('.');
-
-        // Check if dotIndex is valid (greater than or equal to 0)
-        if (dotIndex >= 0) {
-            // Extract the substring before the dot character
-            return imageDotJpeg.substring(0, dotIndex);
-        } else {
-            // If dotIndex is -1 (dot not found), return the original string
-            return imageDotJpeg;
-        }
-    }
-
-
-    /*
      * Adds all possible characters from ASCII 32 (space) to ASCII 126 (tilde) into the charSet.
      */
-    private void addAll() {
+    public void addAll() {
         for (int i = 32; i <= 126; i++) {
             charSet.add((char) i);
+            asciiArtAlgorithm.addChar((char) i);
         }
     }
 
@@ -483,8 +480,10 @@ public class Shell {
         while (first < second) {
             if (addOrRemove.equals("add")) {
                 charSet.add(first);
+                asciiArtAlgorithm.addChar(first);
             } else if (addOrRemove.equals("remove")) {
                 charSet.remove(first);
+                asciiArtAlgorithm.removeChar(first);
             }
             first++;
         }

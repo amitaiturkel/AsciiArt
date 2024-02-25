@@ -8,18 +8,19 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        // Create an instance of the Shell
-//        Shell shell = new Shell();
+//         String FONT = "Courier New";
+//        Image image = new Image("cat.jpeg");        // Create an instance of the Shell
+//        char[] numericCharsets = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+//        // Create an instance of AsciiArtAlgorithm
+//        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, 256, numericCharsets);
+//        char[][] asciiImage = asciiArtAlgorithm.run();
+//        AsciiOutput consoleAsciiOutput = new HtmlAsciiOutput( "cat.html",FONT);
+//        consoleAsciiOutput.out(asciiImage);
+
+        // Run the algorithm to generate ASCII art
+        Shell shell = new Shell();
 
         // Run the shell
-//        shell.run();
-
-        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(new Image("cat.jpeg"), 128, new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'});
-
-        char[][] asciiImage = asciiArtAlgorithm.run();
-
-        AsciiOutput consoleAsciiOutput = new HtmlAsciiOutput("cat.html" ,"Courier New");
-
-        consoleAsciiOutput.out(asciiImage);
+        shell.run();
     }
 }

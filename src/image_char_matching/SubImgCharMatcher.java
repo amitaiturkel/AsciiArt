@@ -13,38 +13,50 @@ import java.util.*;
 public class SubImgCharMatcher {
     private Set<Character> myCharSet = new HashSet<>();
     private Map<Character, Double> charBrightnessMapBeforeStratch = new HashMap<>();
+    private Map<Character, Double> FinalcharBrightness = new HashMap<>();
     private double minCharValue;
     private double maxCharValue;
     private char minChar;
-        private char maxChar;
+    private char maxChar;
 
+    private void createFinalMap(){
+        for(Character c :myCharSet){
+            FinalcharBrightness.put(c,charToDouble(c));
 
+        }
+    }
     /*
     Gets a char checks if it's min and if so updates the attributes
      */
-    private void updateMin(char c) {
+    private boolean updateMin(char c) {
         if (minCharValue > charBrightness(c)) {
             minCharValue = charBrightness(c);
             minChar = c;
+            return true;
         }
+        return false;
     }
 
     /*
     Gets a char checks if it's max and if so updates the attributes
      */
-    private void updateMax(char c) {
+    private boolean updateMax(char c) {
         if (maxCharValue < charBrightness(c)) {
             maxCharValue = charBrightness(c);
             maxChar = c;
+            return true;
         }
+        return false;
     }
 
     /*
     Gets a char checks if it's min or max and if so updates the attributes
      */
-    private void updateMinMax(char c) {
-        updateMin(c);
-        updateMax(c);
+    private boolean updateMinMax(char c) {
+        boolean changeMin ,changeMax;
+        changeMin =updateMin(c);
+        changeMax = updateMax(c);
+        return changeMax || changeMin;
     }
 
 
@@ -57,11 +69,13 @@ public class SubImgCharMatcher {
     public SubImgCharMatcher(char[] charset) {
         minCharValue = charBrightness(charset[0]);
         maxCharValue = 0;
+        boolean changed;
         for (char c : charset) {
             myCharSet.add(c);
             charBrightnessMapBeforeStratch.put(c, charBrightness(c));
-            updateMinMax(c);
+            changed = updateMinMax(c);
         }
+        createFinalMap();
     }
 
 
@@ -123,7 +137,10 @@ public class SubImgCharMatcher {
     public void addChar(char c) {
         myCharSet.add(c);
         charBrightnessMapBeforeStratch.put(c, charBrightness(c));
-        updateMinMax(c);
+        boolean changed = updateMinMax(c);
+        if (changed){
+            createFinalMap();
+        }
     }
 
     /**
@@ -133,18 +150,23 @@ public class SubImgCharMatcher {
      */
     public void removeChar(char c) {
         myCharSet.remove(c);
-        charBrightnessMapBeforeStratch.remove(c, charBrightness(c));
+        FinalcharBrightness.remove(c);
+        charBrightnessMapBeforeStratch.remove(c, charBrightness(c))
+        ;
         if (c == minChar) {
             for (char c1 : myCharSet) {
                 updateMin(c1);
             }
+
         }
 
         if (c == maxChar) {
             for (char c1 : myCharSet) {
                 updateMax(c1);
+
             }
         }
+        createFinalMap();
     }
 
     /**
@@ -155,15 +177,10 @@ public class SubImgCharMatcher {
      */
     public char getCharByImageBrightness(double brightness) {
         char closestChar = 'Z';
-        double minDis = 10001;
-
-        for (Map.Entry<Character, Double> entry : charBrightnessMapBeforeStratch.entrySet()) {
+        double minDis = Double.POSITIVE_INFINITY;
+        for (Map.Entry<Character, Double> entry : FinalcharBrightness.entrySet()) {
             double currentDis = Math.abs(brightness - entry.getValue());
-            if (currentDis == 0) {
-                return entry.getKey(); // Early exit if brightness matches exactly.
-            }
-
-            if (currentDis < minDis) {
+            if (currentDis <= minDis) {
                 closestChar = entry.getKey();
                 minDis = currentDis;
             }
@@ -171,7 +188,6 @@ public class SubImgCharMatcher {
 
         return closestChar;
     }
-
 
 
 
