@@ -75,6 +75,7 @@ public class ImageOperator {
      * @return 2D array of sub-images.
      */
     public static Image[][] createSubImageArray(Image image, int resolution) {
+
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
 

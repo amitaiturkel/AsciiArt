@@ -34,6 +34,7 @@ public class CharConverter {
     }
 
     private static BufferedImage getBufferedImage(char c, String fontName, int pixelsPerRow) {
+
         String charStr = Character.toString(c);
         Font font = new Font(fontName, Font.PLAIN, pixelsPerRow);
         BufferedImage img = new BufferedImage(pixelsPerRow, pixelsPerRow, BufferedImage.TYPE_INT_ARGB);
