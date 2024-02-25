@@ -137,10 +137,13 @@ public class SubImgCharMatcher {
     public void addChar(char c) {
         myCharSet.add(c);
         charBrightnessMapBeforeStratch.put(c, charBrightness(c));
+
         boolean changed = updateMinMax(c);
         if (changed){
             createFinalMap();
         }
+        FinalcharBrightness.put(c,charToDouble(c));
+
     }
 
     /**
