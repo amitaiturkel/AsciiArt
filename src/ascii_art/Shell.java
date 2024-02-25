@@ -57,7 +57,7 @@ public class Shell {
     private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     private int resolution = 128;
     private String input;
-    private String outputMethod = "console";
+    private String outputMethod = "html";
     private String imageName = "cat";
 
     // constructor
@@ -94,7 +94,7 @@ public class Shell {
                 case "output":
                     chooseOutput();
                     break;
-                case "asciiart":
+                case "asciiArt":
                     runAsciiArtAlgorithm();
                     break;
                 default:
@@ -234,6 +234,8 @@ public class Shell {
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
         image = new Image(imageString);
         //?תופסים איפה
+
+        imageName = removeDotJpeg(imageString);
     }
 
     private void chooseOutput() {
@@ -280,9 +282,29 @@ public class Shell {
     // Auxiliary functions
 
     /*
+     * Removes the file extension from the input filename if it exists.
+     * If the input filename does not contain a dot ('.') character,
+     * returns the original filename unchanged.
+     */
+    private String removeDotJpeg(String imageDotJpeg) {
+        // Find the index of the dot ('.') character
+        int dotIndex = imageDotJpeg.lastIndexOf('.');
+
+        // Check if dotIndex is valid (greater than or equal to 0)
+        if (dotIndex >= 0) {
+            // Extract the substring before the dot character
+            return imageDotJpeg.substring(0, dotIndex);
+        } else {
+            // If dotIndex is -1 (dot not found), return the original string
+            return imageDotJpeg;
+        }
+    }
+
+
+    /*
      * Adds all possible characters from ASCII 32 (space) to ASCII 126 (tilde) into the charSet.
      */
-    public void addAll() {
+    private void addAll() {
         for (int i = 32; i <= 126; i++) {
             charSet.add((char) i);
         }
