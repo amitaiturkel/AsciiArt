@@ -7,6 +7,13 @@ import java.awt.Color;
  */
 public class ImageOperator {
 
+    // Constants
+    private static final double RED_TO_GRAY = 0.2126;
+    private static final double GREEN_TO_GRAY = 0.7152;
+    private static final double BLUE_TO_GRAY = 0.0722;
+
+    private static final int POWER_OF_TWO = 2;
+
     private ImageOperator() {
         // Private constructor to prevent instantiation, as this is a utility class.
     }
@@ -61,13 +68,13 @@ public class ImageOperator {
 
         for (int row = 0; row < subImageHeight; row++) {
             for (int col = 0; col < subImageWidth; col++) {
-                if (col >193){
+                // TODO magic number
+                if (col > 193){
                     int a = 1;
                 }
                 subImage[row][col] = image.getPixel(clippedStartRow + row, clippedStartCol + col);
             }
         }
-
         return subImage;
     }
 
@@ -121,7 +128,7 @@ public class ImageOperator {
             throw new IllegalArgumentException("Color cannot be null");
         }
 
-        return color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
+        return color.getRed() * RED_TO_GRAY + color.getGreen() * GREEN_TO_GRAY + color.getBlue() * BLUE_TO_GRAY;
     }
     public static double ImageBrightness(Image image) {
         int width = image.getWidth();
@@ -133,11 +140,9 @@ public class ImageOperator {
             }
         }
 
+        // TODO magic number
         return sum/(image.getWidth() *image.getHeight() * 255);
     }
-
-
-
 
     /**
      * Converts an Image object to a 2D array of Color objects.
@@ -169,46 +174,119 @@ public class ImageOperator {
     public static Image padding(Image image) {
         int width = image.getWidth();
         int height = image.getHeight();
-        int new_width = findNextTwoPower(width);
-        int new_height = findNextTwoPower(height);
+        int newWidth = findNextTwoPower(width);
+        int newHeight = findNextTwoPower(height);
 
-        Color[][] image_colors = new Color[new_height][new_width];
         // Calculate padding on all sides
-        int paddingWidthLeft = (new_width - width) / 2;
-        int paddingHeightTop = (new_height - height) / 2;
+        int paddingWidthLeft = (newWidth - width) / 2;
+        int paddingHeightTop = (newHeight - height) / 2;
+
+        Color[][] imageColors = new Color[newHeight][newWidth];
+
+//        copyImageWithPadding(image, imageColors, paddingHeightTop, paddingWidthLeft);
+
         // Copy original image to the new array with symmetrical padding
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width ; col++) {
-                image_colors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
+                imageColors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
             }
         }
+
         // Fill the left and right padded regions with white color
-        for (int row = 0; row < new_height; row++) {
-            // Fill left side
+//        fillLeftAndRight(width, newWidth, newHeight, imageColors);
+
+        for (int row = 0; row < newHeight; row++) {
+
             for (int col = 0; col < paddingWidthLeft; col++) {
-                image_colors[row][col] = Color.WHITE;
+                imageColors[row][col] = Color.WHITE;
             }
-            // Fill right side
-            for (int col = (width + paddingWidthLeft); col < new_width; col++) {
-                image_colors[row][col] = Color.WHITE;
+
+            for (int col = (width + paddingWidthLeft); col < newWidth; col++) {
+                imageColors[row][col] = Color.WHITE;
             }
         }
+
         // Fill the top and bottom padded regions with white color
+
+//        fillTop(paddingHeightTop, newWidth, imageColors);
         for (int row = 0; row < paddingHeightTop; row++) {
-            // Fill top side
-            for (int col = 0; col < new_width; col++) {
-                image_colors[row][col] = Color.WHITE;
+            for (int col = 0; col < newWidth; col++) {
+                imageColors[row][col] = Color.WHITE;
             }
         }
 
-        for (int row = (height + paddingHeightTop); row < new_height; row++) {
+//        int row = height + paddingHeightTop;
+//        fillBottom(row, newHeight, newWidth, imageColors);
+        for (int row = (height + paddingHeightTop); row < newHeight; row++) {
             // Fill bottom side
-            for (int col = 0; col < new_width; col++) {
-                image_colors[row][col] = Color.WHITE;
+            for (int col = 0; col < newWidth; col++) {
+                imageColors[row][col] = Color.WHITE;
             }
         }
 
-        return new Image(image_colors, new_width, new_height);
+        return new Image(imageColors, newWidth, newHeight);
+    }
+
+    /*
+     * Copies the original image to a new array with symmetrical padding.
+     *
+     * @param image The original image.
+     * @param imageColors The array to store the padded image.
+     * @param paddingHeightTop The padding height at the top.
+     * @param paddingWidthLeft The padding width at the left.
+     */
+    private static void copyImageWithPadding(Image image,
+                                             Color[][] imageColors,
+                                             int paddingHeightTop,
+                                             int paddingWidthLeft) {
+        int height = image.getHeight();
+        int width = image.getWidth();
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                imageColors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
+            }
+        }
+    }
+
+    private static void fillBottom(int row, int newHeight, int newWidth, Color[][] imageColors) {
+        for (; row < newHeight; row++) {
+            for (int col = 0; col < newWidth; col++) {
+                imageColors[row][col] = Color.WHITE;
+            }
+        }
+    }
+
+    private static void fillTop(int paddingHeightTop, int newWidth, Color[][] imageColors) {
+        for (int row = 0; row < paddingHeightTop; row++) {
+            for (int col = 0; col < newWidth; col++) {
+                imageColors[row][col] = Color.WHITE;
+            }
+        }
+    }
+
+    private static void fillLeftAndRight(int width, int newWidth, int newHeight, Color[][] imageColors) {
+        for (int row = 0; row < newHeight; row++) {
+
+            int paddingWidthLeft = (newWidth - width) / 2;
+
+            fillLeftSide(row, paddingWidthLeft, paddingWidthLeft, imageColors);
+
+            int col = width + paddingWidthLeft;
+            fillRightSide(row, col, newWidth, imageColors);
+        }
+    }
+
+    private static void fillLeftSide(int row, int col, int paddingWidthLeft, Color[][] imageColors) {
+        for (; col < paddingWidthLeft; col++) {
+            imageColors[row][col] = Color.WHITE;
+        }
+    }
+
+    private static void fillRightSide(int row, int col, int newWidth, Color[][] imageColors) {
+        for (; col < newWidth; col++) {
+            imageColors[row][col] = Color.WHITE;
+        }
     }
 
     /**
@@ -218,10 +296,11 @@ public class ImageOperator {
      * @return The next power of two.
      */
     private static int findNextTwoPower(int num) {
-        int power = 2;
+        int power = POWER_OF_TWO;
         while (power < num) {
-            power *= 2;
+            power *= POWER_OF_TWO;
         }
         return power;
     }
 }
+

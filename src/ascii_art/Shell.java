@@ -136,9 +136,7 @@ public class Shell {
 
         // the user entered "add <char>"
         if (toAdd.length() == 1) {
-            char c = input.charAt(TO_ADD_INDEX);
-            charSet.add(c);
-            asciiArtAlgorithm.addChar(c);
+            addSingleChar();
             return;
         }
 
@@ -156,8 +154,7 @@ public class Shell {
 
         // the user entered "add space"
         if (toAdd.equals("space")) {
-            charSet.add(' ');
-            asciiArtAlgorithm.addChar(' ');
+            addSpace();
             return;
         }
 
@@ -174,12 +171,10 @@ public class Shell {
 
         // extract from input the thing the user wants to remove
         String toRemove = input.substring(TO_REMOVE_INDEX);
-        // TODO: if else?
+
         // the user entered "remove <char>"
         if (toRemove.length() == 1) {
-            char c = input.charAt(TO_REMOVE_INDEX);
-            charSet.remove(c);
-            asciiArtAlgorithm.removeChar(c);
+            removeSingleChar();
             return;
         }
 
@@ -191,18 +186,13 @@ public class Shell {
 
         // the user entered "remove all"
         if (toRemove.equals("all")) {
-            for(char c :charSet){
-                asciiArtAlgorithm.removeChar(c);
-            }
-            charSet.clear();
+            removeAll();
             return;
         }
 
         // the user entered "remove space"
         if (toRemove.equals("space")) {
-            charSet.remove(' ');
-            asciiArtAlgorithm.removeChar(' ');
-
+            removeSpace();
             return;
         }
 
@@ -301,7 +291,64 @@ public class Shell {
     // Auxiliary functions
 
     /*
-     * Adds all possible characters from ASCII 32 (space) to ASCII 126 (tilde) into the charSet.
+     * Removes a space character from the set and invokes the
+     * ASCII art algorithm to process the removal of the character.
+     * a sub function of removeCharacters.
+     */
+    private void removeSpace() {
+        charSet.remove(' ');
+        asciiArtAlgorithm.removeChar(' ');
+    }
+
+    /*
+     * Removes all characters present in the character set from the ASCII art algorithm.
+     * This method iterates through each character in the character set,
+     * removes it from the ASCII art algorithm, and then clears the character set.
+     */
+    private void removeAll() {
+        for(char c :charSet){
+            asciiArtAlgorithm.removeChar(c);
+        }
+        charSet.clear();
+
+    }
+
+    /*
+     * removes a single character from the input string from the character set
+     * and invokes the ASCII art algorithm to process the removal of the character.
+     */
+    private void removeSingleChar() {
+        char c = input.charAt(TO_REMOVE_INDEX);
+        charSet.remove(c);
+        asciiArtAlgorithm.removeChar(c);
+    }
+
+
+    /*
+     * Adds a space character to the set and invokes the
+     * ASCII art algorithm to process the character.
+     * a sub function of addCharacters.
+     */
+    private void addSpace() {
+        charSet.add(' ');
+        asciiArtAlgorithm.addChar(' ');
+    }
+
+    /*
+     * Adds a single character from the input string to the character
+     * set and invokes the ASCII art algorithm to process the character.
+     * a sub function of addCharacters.
+     */
+    private void addSingleChar() {
+        char c = input.charAt(TO_ADD_INDEX);
+        charSet.add(c);
+        asciiArtAlgorithm.addChar(c);
+    }
+
+    /*
+     * Adds all possible characters from ASCII 32
+     * (space) to ASCII 126 (tilde) into the charSet.
+     * a sub function of addCharacters.
      */
     public void addAll() {
         for (int i = 32; i <= 126; i++) {
