@@ -8,6 +8,11 @@ import image_char_matching.SubImgCharMatcher;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * The AsciiArtAlgorithm class is responsible for generating ASCII art from an input image.
+ * It divides the input image into sub-images, calculates their brightness values, and maps
+ * each sub-image to a corresponding ASCII character based on its brightness level.
+ */
 public class AsciiArtAlgorithm {
     private Image orignalImage;
     private Image[][] subImagesArray;
@@ -20,6 +25,13 @@ public class AsciiArtAlgorithm {
     private SubImgCharMatcher charMatcher;
 
 
+    /**
+     * Constructs an AsciiArtAlgorithm object with the specified parameters.
+     *
+     * @param image       The original input image
+     * @param res         The resolution parameter for dividing the image into sub-images
+     * @param charMatcher The character matcher object for associating brightness levels with ASCII characters
+     */
     public AsciiArtAlgorithm(Image image, int res, SubImgCharMatcher charMatcher) {
         orignalImage = ImageOperator.padding(image);
         brightnessMap = new HashMap<>();

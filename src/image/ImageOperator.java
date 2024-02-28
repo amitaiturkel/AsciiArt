@@ -126,8 +126,17 @@ public class ImageOperator {
             throw new IllegalArgumentException("Color cannot be null");
         }
 
-        return color.getRed() * RED_TO_GRAY + color.getGreen() * GREEN_TO_GRAY + color.getBlue() * BLUE_TO_GRAY;
+        return  color.getRed() * RED_TO_GRAY +
+                color.getGreen() * GREEN_TO_GRAY +
+                color.getBlue() * BLUE_TO_GRAY;
     }
+
+    /**
+     * Calculates the brightness of an image.
+     *
+     * @param image The image to calculate brightness for.
+     * @return The brightness of the image.
+     */
     public static double ImageBrightness(Image image) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -177,17 +186,11 @@ public class ImageOperator {
         int paddingHeightTop = (newHeight - height) / 2;
         Color[][] imageColors = new Color[newHeight][newWidth];
 
-//        copyImageWithPadding(image, imageColors, paddingHeightTop, paddingWidthLeft);
-
-        // Copy original image to the new array with symmetrical padding
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width ; col++) {
                 imageColors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
             }
         }
-
-        // Fill the left and right padded regions with white color
-//        fillLeftAndRight(width, newWidth, newHeight, imageColors);
 
         for (int row = 0; row < newHeight; row++) {
 
@@ -200,17 +203,12 @@ public class ImageOperator {
             }
         }
 
-        // Fill the top and bottom padded regions with white color
-
-//        fillTop(paddingHeightTop, newWidth, imageColors);
         for (int row = 0; row < paddingHeightTop; row++) {
             for (int col = 0; col < newWidth; col++) {
                 imageColors[row][col] = Color.WHITE;
             }
         }
 
-//        int row = height + paddingHeightTop;
-//        fillBottom(row, newHeight, newWidth, imageColors);
         for (int row = (height + paddingHeightTop); row < newHeight; row++) {
             // Fill bottom side
             for (int col = 0; col < newWidth; col++) {
@@ -219,68 +217,6 @@ public class ImageOperator {
         }
 
         return new Image(imageColors, newWidth, newHeight);
-    }
-
-    /*
-     * Copies the original image to a new array with symmetrical padding.
-     *
-     * @param image The original image.
-     * @param imageColors The array to store the padded image.
-     * @param paddingHeightTop The padding height at the top.
-     * @param paddingWidthLeft The padding width at the left.
-     */
-    private static void copyImageWithPadding(Image image,
-                                             Color[][] imageColors,
-                                             int paddingHeightTop,
-                                             int paddingWidthLeft) {
-        int height = image.getHeight();
-        int width = image.getWidth();
-
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                imageColors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
-            }
-        }
-    }
-
-    private static void fillBottom(int row, int newHeight, int newWidth, Color[][] imageColors) {
-        for (; row < newHeight; row++) {
-            for (int col = 0; col < newWidth; col++) {
-                imageColors[row][col] = Color.WHITE;
-            }
-        }
-    }
-
-    private static void fillTop(int paddingHeightTop, int newWidth, Color[][] imageColors) {
-        for (int row = 0; row < paddingHeightTop; row++) {
-            for (int col = 0; col < newWidth; col++) {
-                imageColors[row][col] = Color.WHITE;
-            }
-        }
-    }
-
-    private static void fillLeftAndRight(int width, int newWidth, int newHeight, Color[][] imageColors) {
-        for (int row = 0; row < newHeight; row++) {
-
-            int paddingWidthLeft = (newWidth - width) / 2;
-
-            fillLeftSide(row, paddingWidthLeft, paddingWidthLeft, imageColors);
-
-            int col = width + paddingWidthLeft;
-            fillRightSide(row, col, newWidth, imageColors);
-        }
-    }
-
-    private static void fillLeftSide(int row, int col, int paddingWidthLeft, Color[][] imageColors) {
-        for (; col < paddingWidthLeft; col++) {
-            imageColors[row][col] = Color.WHITE;
-        }
-    }
-
-    private static void fillRightSide(int row, int col, int newWidth, Color[][] imageColors) {
-        for (; col < newWidth; col++) {
-            imageColors[row][col] = Color.WHITE;
-        }
     }
 
     /**
