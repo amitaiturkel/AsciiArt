@@ -326,7 +326,6 @@ public class Shell {
         charMatcher.removeChar(c);
     }
 
-
     /*
      * Adds a space character to the set and invokes the
      * ASCII art algorithm to process the character.
