@@ -13,6 +13,7 @@ public class ImageOperator {
     private static final double BLUE_TO_GRAY = 0.0722;
 
     private static final int POWER_OF_TWO = 2;
+    private static final int BIGGEST_RGB = 255;
 
     private ImageOperator() {
         // Private constructor to prevent instantiation, as this is a utility class.
@@ -69,9 +70,6 @@ public class ImageOperator {
         for (int row = 0; row < subImageHeight; row++) {
             for (int col = 0; col < subImageWidth; col++) {
                 // TODO magic number
-                if (col > 193){
-                    int a = 1;
-                }
                 subImage[row][col] = image.getPixel(clippedStartRow + row, clippedStartCol + col);
             }
         }
@@ -140,8 +138,7 @@ public class ImageOperator {
             }
         }
 
-        // TODO magic number
-        return sum/(image.getWidth() *image.getHeight() * 255);
+        return sum/(image.getWidth() *image.getHeight() * BIGGEST_RGB);
     }
 
     /**
@@ -176,11 +173,8 @@ public class ImageOperator {
         int height = image.getHeight();
         int newWidth = findNextTwoPower(width);
         int newHeight = findNextTwoPower(height);
-
-        // Calculate padding on all sides
         int paddingWidthLeft = (newWidth - width) / 2;
         int paddingHeightTop = (newHeight - height) / 2;
-
         Color[][] imageColors = new Color[newHeight][newWidth];
 
 //        copyImageWithPadding(image, imageColors, paddingHeightTop, paddingWidthLeft);
