@@ -3,6 +3,7 @@ import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
 import image.Image;
+import image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -62,13 +63,17 @@ public class Shell {
     private String outputMethod = "console";
     private String imageName = "cat";
     private AsciiArtAlgorithm asciiArtAlgorithm;
+    private SubImgCharMatcher charMatcher;
+
     private boolean changedCharSet;
+
 
     // constructor
 
     public Shell() throws IOException {
         char[] charArray = setToArray(charSet);
-        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charArray);
+        charMatcher = new SubImgCharMatcher(charArray);
+        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
         changedCharSet = false;
     }
 
@@ -206,7 +211,7 @@ public class Shell {
             // check if the input is "res up"
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
                 resolution *= 2;
-                asciiArtAlgorithm.changeResolution(resolution);
+                asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -220,7 +225,7 @@ public class Shell {
             // check if the input is "res down"
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
                 resolution /= 2;
-                asciiArtAlgorithm.changeResolution(resolution);
+                asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
@@ -295,7 +300,7 @@ public class Shell {
      */
     private void removeSpace() {
         charSet.remove(' ');
-        asciiArtAlgorithm.removeChar(' ');
+        charMatcher.removeChar(' ');
     }
 
     /*
@@ -305,7 +310,7 @@ public class Shell {
      */
     private void removeAll() {
         for(char c :charSet){
-            asciiArtAlgorithm.removeChar(c);
+            charMatcher.removeChar(c);
         }
         charSet.clear();
 
@@ -318,7 +323,7 @@ public class Shell {
     private void removeSingleChar() {
         char c = input.charAt(TO_REMOVE_INDEX);
         charSet.remove(c);
-        asciiArtAlgorithm.removeChar(c);
+        charMatcher.removeChar(c);
     }
 
 
@@ -329,7 +334,7 @@ public class Shell {
      */
     private void addSpace() {
         charSet.add(' ');
-        asciiArtAlgorithm.addChar(' ');
+        charMatcher.addChar(' ');
     }
 
     /*
@@ -340,7 +345,7 @@ public class Shell {
     private void addSingleChar() {
         char c = input.charAt(TO_ADD_INDEX);
         charSet.add(c);
-        asciiArtAlgorithm.addChar(c);
+        charMatcher.addChar(c);
     }
 
     /*
@@ -351,7 +356,7 @@ public class Shell {
     public void addAll() {
         for (int i = 32; i <= 126; i++) {
             charSet.add((char) i);
-            asciiArtAlgorithm.addChar((char) i);
+            charMatcher.addChar((char) i);
         }
     }
 
@@ -528,10 +533,10 @@ public class Shell {
         while (first < second) {
             if (addOrRemove.equals("add")) {
                 charSet.add(first);
-                asciiArtAlgorithm.addChar(first);
+                charMatcher.addChar(first);
             } else if (addOrRemove.equals("remove")) {
                 charSet.remove(first);
-                asciiArtAlgorithm.removeChar(first);
+                charMatcher.removeChar(first);
             }
             first++;
         }

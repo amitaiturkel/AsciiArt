@@ -137,13 +137,11 @@ public class SubImgCharMatcher {
     public void addChar(char c) {
         myCharSet.add(c);
         charBrightnessMapBeforeStratch.put(c, charBrightness(c));
-
         boolean changed = updateMinMax(c);
         if (changed){
             createFinalMap();
         }
         FinalcharBrightness.put(c,charToDouble(c));
-
     }
 
     /**
@@ -154,9 +152,9 @@ public class SubImgCharMatcher {
     public void removeChar(char c) {
         myCharSet.remove(c);
         FinalcharBrightness.remove(c);
-        charBrightnessMapBeforeStratch.remove(c, charBrightness(c))
-        ;
+        charBrightnessMapBeforeStratch.remove(c, charBrightness(c));
         if (c == minChar) {
+            minCharValue = 1; // so minChar will work
             for (char c1 : myCharSet) {
                 updateMin(c1);
             }
@@ -164,6 +162,7 @@ public class SubImgCharMatcher {
         }
 
         if (c == maxChar) {
+            maxCharValue = -1; // so updateMax will work
             for (char c1 : myCharSet) {
                 updateMax(c1);
 

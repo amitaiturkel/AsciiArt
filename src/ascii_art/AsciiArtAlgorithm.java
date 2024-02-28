@@ -20,66 +20,20 @@ public class AsciiArtAlgorithm {
     private SubImgCharMatcher charMatcher;
 
 
-    public AsciiArtAlgorithm(Image image, int res, char[] charsets) {
+    public AsciiArtAlgorithm(Image image, int res, SubImgCharMatcher charMatcher) {
         orignalImage = ImageOperator.padding(image);
         brightnessMap = new HashMap<>();
         resolution = res;
         int imageWidth = orignalImage.getWidth();
         int imageHeight = orignalImage.getHeight();
-        // Calculate the size of each sub-image based on the desired resolution
         int subImageSize = imageWidth / resolution;
-        // Calculate the number of rows and columns in the resulting array
         subImageRows = imageHeight / subImageSize;
         subImageCols = resolution;
         subImagesArray = ImageOperator.createSubImageArray(orignalImage, resolution);
-        charMatcher = new SubImgCharMatcher(charsets);
+        this.charMatcher = charMatcher;
         updateHashMap();
 
     }
-
-    /**
-     * Adds the specified character to the character matcher.
-     *
-     * @param c the character to be added
-     */
-    public void addChar(char c){
-        charMatcher.addChar(c);
-    }
-
-    /**
-     * Removes the specified character from the character matcher.
-     *
-     * @param c the character to be removed
-     */
-    public void removeChar(char c){
-        charMatcher.removeChar(c);
-    }
-
-    /**
-     * Changes the resolution of the original image.
-     * If the specified resolution is different from the current
-     * resolution, it recalculates the sub-images based on the
-     * new resolution and updates the internal state.
-     *
-     * @param res the new resolution to set
-     */
-    public void changeResolution(int res) {
-        if (res != resolution) {
-            subImagesArray = ImageOperator.createSubImageArray(orignalImage, res);
-            resolution = res;
-            int imageWidth = orignalImage.getWidth();
-            int imageHeight = orignalImage.getHeight();
-
-            // Calculate the size of each sub-image based on the desired resolution
-            int subImageSize = imageWidth / resolution;
-
-            // Calculate the number of rows and columns in the resulting array
-            subImageRows = imageHeight / subImageSize;
-            subImageCols = resolution;
-            updateHashMap();
-        }
-    }
-
     /*
      * Updates the HashMap with brightness values for sub-images if they are not already present.
      * The brightness values are computed using the ImageOperator class.
