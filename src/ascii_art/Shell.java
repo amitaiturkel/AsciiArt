@@ -78,9 +78,7 @@ public class Shell {
         KeyboardInput keyboardInput = KeyboardInput.getObject();
         System.out.print(">>> ");
         input = KeyboardInput.readLine();
-
         while (!Objects.equals(input, "exit")) {
-
             String command = extractFirstWordOfInput();
             switch (command) {
                 case "chars":
@@ -101,7 +99,6 @@ public class Shell {
                 case "output":
                     chooseOutput();
                     break;
-                    //TODO: make case sensetive?
                 case "asciiArt":
                     runAsciiArtAlgorithm();
                     break;
@@ -113,6 +110,7 @@ public class Shell {
         }
         System.exit(0);
     }
+
 
     // the commends methods
 
