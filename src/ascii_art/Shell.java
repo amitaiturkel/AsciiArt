@@ -13,6 +13,10 @@ import java.util.Set;
 
 import static java.util.Collections.addAll;
 
+/**
+ * The Shell class represents the command-line shell for interacting with the ASCII art generation system.
+ * It allows users to input commands to manipulate settings and generate ASCII art from images.
+ */
 public class Shell {
 
     // constants
@@ -31,7 +35,8 @@ public class Shell {
         // used in chooseOutput
     private static final int OUTPUT_PLUS_ANOTHER_WORD = 8;
     private static final int BEGINNING_OF_SECOND_WORD_OF_OUTPUT = 7;
-    private static final String INCORRECT_OUTPUT_INPUT = "Did not change output method due to incorrect format.";
+    private static final String INCORRECT_OUTPUT_INPUT =    "Did not change output method " +
+                                                            "due to incorrect format.";
 
         // used in selectImageFile
     private static final int IMAGE_PLUS_ANOTHER_WORD = 7;
@@ -59,7 +64,8 @@ public class Shell {
 
     // attributes
 
-    private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
+    private Set<Character> charSet = new HashSet<>(Arrays.asList(   '0', '1', '2', '3', '4',
+                                                                    '5', '6', '7', '8', '9'));
     private int resolution = 128;
     private String input;
     private String outputMethod = "console";
@@ -70,6 +76,10 @@ public class Shell {
 
     // constructor
 
+    /**
+     * Constructor for the Shell class.
+     * Initializes necessary components for generating ASCII art from an image.
+     */
     public Shell() {
         try {
             image = new Image("cat.jpeg");
@@ -83,42 +93,59 @@ public class Shell {
 
     // methods
 
-    public void run() throws IOException {
+    /**
+     * Runs the command-line shell, allowing users to input commands and interact with the system.
+     */
+    public void run()  {
         KeyboardInput keyboardInput = KeyboardInput.getObject();
         System.out.print(">>> ");
         input = KeyboardInput.readLine();
+
         while (!Objects.equals(input, "exit")) {
-            String command = extractFirstWordOfInput();
-            switch (command) {
-                case "chars":
-                    viewCharSet();
-                    break;
-                case "add":
-                    addCharacters();
-                    break;
-                case "remove":
-                    removeCharacters();
-                    break;
-                case "res":
-                    controlResolution();
-                    break;
-                case "image":
-                    selectImageFile();
-                    break;
-                case "output":
-                    chooseOutput();
-                    break;
-                case "asciiArt":
-                    runAsciiArtAlgorithm();
-                    break;
-                default:
-                    System.out.println(UNIDENTIFIED_COMMAND);
+            try {
+                processInput();
+            }
+            catch (IOException e){
+                System.out.println(ERROR_PRINTING_IMAGE);
+                continue;
+
             }
             System.out.print(">>> ");
             input = KeyboardInput.readLine();
         }
+
         System.exit(0);
     }
+
+    private void processInput() throws IOException {
+        String command = extractFirstWordOfInput();
+        switch (command) {
+            case "chars":
+                viewCharSet();
+                break;
+            case "add":
+                addCharacters();
+                break;
+            case "remove":
+                removeCharacters();
+                break;
+            case "res":
+                controlResolution();
+                break;
+            case "image":
+                selectImageFile();
+                break;
+            case "output":
+                chooseOutput();
+                break;
+            case "asciiArt":
+                runAsciiArtAlgorithm();
+                break;
+            default:
+                System.out.println(UNIDENTIFIED_COMMAND);
+        }
+    }
+
 
     // the commends methods
 
@@ -239,15 +266,18 @@ public class Shell {
     }
 
     private void selectImageFile() throws IOException {
-        // check if input is too short
         if (input.length() < IMAGE_PLUS_ANOTHER_WORD) {
             System.out.println(ERROR_PRINTING_IMAGE);
-            //?משהו פה לזרוק צריך
         }
 
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
-        image = new Image(imageString);
-        //?תופסים איפה
+        try {
+            image = new Image(imageString);
+        }
+        catch (IOException e){
+            System.out.print(ERROR_PRINTING_IMAGE);
+        }
+
     }
 
     private void chooseOutput() {
@@ -355,7 +385,7 @@ public class Shell {
      * (space) to ASCII 126 (tilde) into the charSet.
      * a sub function of addCharacters.
      */
-    public void addAll() {
+    private void addAll() {
         for (int i = 32; i <= 126; i++) {
             charSet.add((char) i);
             charMatcher.addChar((char) i);
@@ -422,59 +452,6 @@ public class Shell {
                 System.out.print(c + " ");
             }
         }
-
-    /*
-     * Checks if the input string is valid for adding an item.
-     * a sub function of addCharacters.
-     *
-     * if it is not valid the function will print a message and return false.
-     * otherwise it will return true.
-     */
-    private boolean checkIfAddStringValid(String input) {
-
-        // the user entered just "add" or "add "
-        if (input.length() < ADD_PLUS_CHAR) {
-            System.out.println(INCORRECT_ADD_INPUT);
-            return false;
-        }
-
-        // extract from input the thing the user wants to add
-        String toAdd = input.substring(TO_ADD_INDEX);
-
-        // toAdd should not contain " "
-        if (toAdd.contains(" ")) {
-            System.out.println(INCORRECT_ADD_INPUT);
-            return false;
-        }
-
-        return true;
-    }
-
-    /*
-     * Checks if the input string is valid for removing an item.
-     * a sub function of addCharacters.
-     *
-     * if it is not valid the function will print a message and return false.
-     * otherwise it will return true.
-     */
-    private boolean checkIfRemoveStringValid(String input) {
-
-        // the user entered just "remove" or "remove "
-        if (input.length() < REMOVE_PLUS_CHAR) {
-            System.out.println(INCORRECT_REMOVE_INPUT);
-            return false;
-        }
-
-        // extract from input the thing the user wants to remove
-        String toRemove = input.substring(TO_REMOVE_INDEX);
-
-        // toRemove should not contain " "
-        if (toRemove.contains(" ")) {
-            System.out.println(INCORRECT_REMOVE_INPUT);
-            return false;
-        }
-        return true;
-    }
 
     /*
      * Checks if the input string is valid for adding or removing an item.
@@ -560,6 +537,18 @@ public class Shell {
         return true;
     }
 
+    /**
+     * The main entry point of the program.
+     * Initializes and runs the ASCII art generation shell.
+     *
+     * @param args The command-line arguments passed to the program.
+     */
+    public static void main(String[] args) {
+        // Run the algorithm to generate ASCII art
+        Shell shell = new Shell();
 
+        // Run the shell
+        shell.run();
+    }
 
 }
