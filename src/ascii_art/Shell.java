@@ -17,6 +17,10 @@ public class Shell {
 
     // constants
 
+        // used in case of image failure
+    private static final String IMAGE_FAILURE = "Did not execute due to problem with image file.";
+
+
     // used in runAsciiArtAlgorithm
     private static final String FONT = "Courier New";
     private static final String EMPTY_CHAR_SET = "Did not execute. Charset is empty.";
@@ -54,9 +58,7 @@ public class Shell {
     private static final int CHAR_TO_CHAR_LENGTH = 3;
 
     // attributes
-    //TODO why not in the constractor?
 
-    private Image image = new Image("cat.jpeg");
     private Set<Character> charSet = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     private int resolution = 128;
     private String input;
@@ -64,17 +66,19 @@ public class Shell {
     private String imageName = "cat";
     private AsciiArtAlgorithm asciiArtAlgorithm;
     private SubImgCharMatcher charMatcher;
-
-    private boolean changedCharSet;
-
+    private Image image;
 
     // constructor
 
-    public Shell() throws IOException {
-        char[] charArray = setToArray(charSet);
-        charMatcher = new SubImgCharMatcher(charArray);
-        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
-        changedCharSet = false;
+    public Shell() {
+        try {
+            image = new Image("cat.jpeg");
+            char[] charArray = setToArray(charSet);
+            charMatcher = new SubImgCharMatcher(charArray);
+            asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
+        } catch (IOException e) {
+            System.out.println(IMAGE_FAILURE);
+        }
     }
 
     // methods
