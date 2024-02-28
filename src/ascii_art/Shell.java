@@ -79,41 +79,54 @@ public class Shell {
 
     // methods
 
-    public void run() throws IOException {
+    public void run()  {
         KeyboardInput keyboardInput = KeyboardInput.getObject();
         System.out.print(">>> ");
         input = KeyboardInput.readLine();
+
         while (!Objects.equals(input, "exit")) {
-            String command = extractFirstWordOfInput();
-            switch (command) {
-                case "chars":
-                    viewCharSet();
-                    break;
-                case "add":
-                    addCharacters();
-                    break;
-                case "remove":
-                    removeCharacters();
-                    break;
-                case "res":
-                    controlResolution();
-                    break;
-                case "image":
-                    selectImageFile();
-                    break;
-                case "output":
-                    chooseOutput();
-                    break;
-                case "asciiArt":
-                    runAsciiArtAlgorithm();
-                    break;
-                default:
-                    System.out.println(UNIDENTIFIED_COMMAND);
+            try {
+                processInput();
+            }
+            catch (IOException e){
+                System.out.println(ERROR_PRINTING_IMAGE);
+                continue;
+
             }
             System.out.print(">>> ");
             input = KeyboardInput.readLine();
         }
+
         System.exit(0);
+    }
+
+    private void processInput() throws IOException {
+        String command = extractFirstWordOfInput();
+        switch (command) {
+            case "chars":
+                viewCharSet();
+                break;
+            case "add":
+                addCharacters();
+                break;
+            case "remove":
+                removeCharacters();
+                break;
+            case "res":
+                controlResolution();
+                break;
+            case "image":
+                selectImageFile();
+                break;
+            case "output":
+                chooseOutput();
+                break;
+            case "asciiArt":
+                runAsciiArtAlgorithm();
+                break;
+            default:
+                System.out.println(UNIDENTIFIED_COMMAND);
+        }
     }
 
 
@@ -236,15 +249,18 @@ public class Shell {
     }
 
     private void selectImageFile() throws IOException {
-        // check if input is too short
         if (input.length() < IMAGE_PLUS_ANOTHER_WORD) {
             System.out.println(ERROR_PRINTING_IMAGE);
-            //?משהו פה לזרוק צריך
         }
 
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
-        image = new Image(imageString);
-        //?תופסים איפה
+        try {
+            image = new Image(imageString);
+        }
+        catch (IOException e){
+            System.out.print(ERROR_PRINTING_IMAGE);
+        }
+
     }
 
     private void chooseOutput() {
