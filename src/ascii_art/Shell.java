@@ -163,84 +163,67 @@ public class Shell {
     }
 
     private void addCharacters() {
-
         // Checks if the input is in a format of "add" + space + something
         if (!checkIfStringValid(input, "add")) {
             return;
         }
         // extract from input the thing the user wants to add
         String toAdd = input.substring(TO_ADD_INDEX);
-
         // the user entered "add <char>"
         if (toAdd.length() == 1) {
             addSingleChar();
             return;
         }
-
         // the user entered "add <char>-<char>"
         if (IsStringInFormatCharToChar(toAdd)) {
             addOrRemoveFromCharToChar(toAdd, "add");
             return;
         }
-
         // the user entered "add all"
         if (toAdd.equals("all")) {
             addAll();
             return;
         }
-
         // the user entered "add space"
         if (toAdd.equals("space")) {
             addSpace();
             return;
         }
-
-        // the user hasn't entered any of the valid options
         System.out.println(INCORRECT_ADD_INPUT);
     }
 
     private void removeCharacters() {
-
         // Checks if the input is in a format of "remove" + space + something
         if (!checkIfStringValid(input, "remove")) {
             return;
         }
-
         // extract from input the thing the user wants to remove
         String toRemove = input.substring(TO_REMOVE_INDEX);
-
         // the user entered "remove <char>"
         if (toRemove.length() == 1) {
             removeSingleChar();
             return;
         }
-
         // the user entered "remove <char>-<char>"
         if (IsStringInFormatCharToChar(toRemove)) {
             addOrRemoveFromCharToChar(toRemove, "remove");
             return;
         }
-
         // the user entered "remove all"
         if (toRemove.equals("all")) {
             removeAll();
             return;
         }
-
         // the user entered "remove space"
         if (toRemove.equals("space")) {
             removeSpace();
             return;
         }
-
-        // the user hasn't entered any of the valid options
         System.out.println(INCORRECT_REMOVE_INPUT);
     }
 
     private void controlResolution() {
-        // check if the input is at the size "res up"
         if (input.length() == RES_PLUS_UP) {
-            // check if the input is "res up"
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
                 if(resolution*2 > findNextTwoPower(image.getWidth())){
                     System.out.println(RES_IS_TWO);
@@ -252,9 +235,7 @@ public class Shell {
                 return;
             }
         }
-        // check if the input is "res down"
         if (input.length() == RES_PLUS_DOWN) {
-            // check if the input is "res down"
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
                 if(resolution/2 < Math.max(1, findNextTwoPower(image.getWidth())/
                         findNextTwoPower(image.getHeight()))){
@@ -301,13 +282,11 @@ public class Shell {
     }
 
     private void runAsciiArtAlgorithm() {
-
         // if the charSet is empty, an error message will be printed
         if (charSet.isEmpty()) {
             System.out.println(EMPTY_CHAR_SET);
             return;
         }
-
         char[][] asciiImage = asciiArtAlgorithm.run();
 
         AsciiOutput consoleAsciiOutput;
@@ -316,15 +295,12 @@ public class Shell {
             case ("console"):
                 consoleAsciiOutput = new ConsoleAsciiOutput();
                 break;
-
             case ("html"):
                 consoleAsciiOutput = new HtmlAsciiOutput(imageName + ".html",FONT);
                 break;
-
             default:
                 consoleAsciiOutput = new ConsoleAsciiOutput();
         }
-
         consoleAsciiOutput.out(asciiImage);
     }
 
@@ -466,11 +442,9 @@ public class Shell {
      * otherwise it will return true.
      */
     private boolean checkIfStringValid(String input, String addOrRemove) {
-
         int minLength = 0;
         String invalidMessage = "";
         int AddOrRemoveIndex = 0;
-
         switch (addOrRemove) {
             case ("add"):
                 minLength = ADD_PLUS_CHAR;
@@ -484,16 +458,13 @@ public class Shell {
                 AddOrRemoveIndex = TO_REMOVE_INDEX;
                 break;
         }
-
         // the user entered just "add" or "add " / "remove" or "remove "
         if (input.length() < minLength) {
             System.out.println(invalidMessage);
             return false;
         }
-
         // extract from input the thing the user wants to add / remove
         String toAddOrRemove = input.substring(AddOrRemoveIndex);
-
         // toAddOrRemove should not contain " "
         if (toAddOrRemove.contains(" ")) {
             System.out.println(invalidMessage);
@@ -503,17 +474,14 @@ public class Shell {
     }
 
     private void addOrRemoveFromCharToChar(String toAddOrToRemove, String addOrRemove) {
-
         char first = toAddOrToRemove.charAt(0);
         char second = toAddOrToRemove.charAt(2);
-
         // Ensure first holds the smaller character and second holds the larger character
         if (first > second) {
             char temp = first;
             first = second;
             second = temp;
         }
-
         while (first < second) {
             if (addOrRemove.equals("add")) {
                 charSet.add(first);

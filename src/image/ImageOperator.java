@@ -87,16 +87,12 @@ public class ImageOperator {
 
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
-
         // Calculate the size of each sub-image based on the desired resolution
         int subImageSize = imageWidth / resolution;
-
         // Calculate the number of rows and columns in the resulting array
         int rows = imageHeight / subImageSize;
         int cols = resolution;
-
         Image[][] subImagesArray = new Image[rows][cols];
-
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 // Calculate start and end coordinates for the sub-image
@@ -104,10 +100,8 @@ public class ImageOperator {
                 int endRow = startRow + subImageSize;
                 int startCol = col * subImageSize;
                 int endCol = startCol + subImageSize;
-
                 // Extract sub-image using the getSubImage function
                 Color[][] subImage = getSubImage(image, startRow, endRow, startCol, endCol);
-
                 // Create an Image object and store it in the 2D array
                 subImagesArray[row][col] = new Image(subImage, subImageSize, subImageSize);
             }
@@ -178,44 +172,34 @@ public class ImageOperator {
      * @return Padded Image object.
      */
     public static Image padding(Image image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int newWidth = findNextTwoPower(width);
-        int newHeight = findNextTwoPower(height);
-        int paddingWidthLeft = (newWidth - width) / 2;
+        int width = image.getWidth(), height = image.getHeight(),newWidth = findNextTwoPower(width),
+        newHeight = findNextTwoPower(height),paddingWidthLeft = (newWidth - width) / 2;
         int paddingHeightTop = (newHeight - height) / 2;
         Color[][] imageColors = new Color[newHeight][newWidth];
-
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width ; col++) {
                 imageColors[row + paddingHeightTop][col + paddingWidthLeft] = image.getPixel(row, col);
             }
         }
-
         for (int row = 0; row < newHeight; row++) {
-
             for (int col = 0; col < paddingWidthLeft; col++) {
                 imageColors[row][col] = Color.WHITE;
             }
-
             for (int col = (width + paddingWidthLeft); col < newWidth; col++) {
                 imageColors[row][col] = Color.WHITE;
             }
         }
-
         for (int row = 0; row < paddingHeightTop; row++) {
             for (int col = 0; col < newWidth; col++) {
                 imageColors[row][col] = Color.WHITE;
             }
         }
-
         for (int row = (height + paddingHeightTop); row < newHeight; row++) {
             // Fill bottom side
             for (int col = 0; col < newWidth; col++) {
                 imageColors[row][col] = Color.WHITE;
             }
         }
-
         return new Image(imageColors, newWidth, newHeight);
     }
 
