@@ -61,6 +61,11 @@ public class Shell {
 
         // used in IsStringInFormatCharToChar
     private static final int CHAR_TO_CHAR_LENGTH = 3;
+    private static final String RES_IS_TWO = "Did not change resolution due to exceeding boundaries."
+    ;
+    private static final String INCORRECT_FORMAT = "Did not change resolution due to incorrect format."
+    ;
+    private static final int POWER_OF_TWO = 2;
 
     // attributes
 
@@ -163,7 +168,6 @@ public class Shell {
         if (!checkIfStringValid(input, "add")) {
             return;
         }
-
         // extract from input the thing the user wants to add
         String toAdd = input.substring(TO_ADD_INDEX);
 
@@ -234,35 +238,36 @@ public class Shell {
     }
 
     private void controlResolution() {
-
         // check if the input is at the size "res up"
         if (input.length() == RES_PLUS_UP) {
-
             // check if the input is "res up"
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
+                if(resolution*2 > findNextTwoPower(image.getWidth())){
+                    System.out.println(RES_IS_TWO);
+                    return;
+                }
                 resolution *= 2;
                 asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
-            System.out.println(INCORRECT_RES_INPUT);
-            return;
         }
-
         // check if the input is "res down"
         if (input.length() == RES_PLUS_DOWN) {
-
             // check if the input is "res down"
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
+                if(resolution/2 < Math.max(1, findNextTwoPower(image.getWidth())/
+                        findNextTwoPower(image.getHeight()))){
+                    System.out.println(RES_IS_TWO);
+                    return;
+                }
                 resolution /= 2;
                 asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
-            System.out.println(INCORRECT_RES_INPUT);
         }
-
-        // 2.6.5 עם משהו לעשות
+        System.out.println(INCORRECT_RES_INPUT);
     }
 
     private void selectImageFile() throws IOException {
@@ -275,7 +280,7 @@ public class Shell {
             image = new Image(imageString);
         }
         catch (IOException e){
-            System.out.print(ERROR_PRINTING_IMAGE);
+            System.out.println(ERROR_PRINTING_IMAGE);
         }
 
     }
@@ -451,6 +456,7 @@ public class Shell {
             for (char c : array) {
                 System.out.print(c + " ");
             }
+            System.out.print("\n");
         }
 
     /*
@@ -535,6 +541,13 @@ public class Shell {
         }
 
         return true;
+    }
+    private static int findNextTwoPower(int num) {
+        int power = POWER_OF_TWO;
+        while (power < num) {
+            power *= POWER_OF_TWO;
+        }
+        return power;
     }
 
     /**
