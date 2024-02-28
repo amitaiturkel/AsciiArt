@@ -323,7 +323,6 @@ public class Shell {
         consoleAsciiOutput.out(asciiImage);
     }
 
-
     // Auxiliary functions
 
     /*
