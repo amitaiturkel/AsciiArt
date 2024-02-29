@@ -2,7 +2,8 @@ package Exceptions;
 
 /**
  * Exception thrown when the format of the resolution input is incorrect.
- * This exception is a subclass of RuntimeException and is used to indicate problems with resolution input format.
+ * This exception is a subclass of RuntimeException and is used to indicate
+ * problems with resolution input format.
  */
 public class WrongFormatResolution extends RuntimeException {
 

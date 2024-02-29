@@ -111,6 +111,8 @@ public class Shell {
             }
             catch (RuntimeException | IOException e){
                 System.out.println(e.getMessage());
+                System.out.print(">>> ");
+                input = KeyboardInput.readLine();
                 continue;
 
             }
@@ -191,7 +193,7 @@ public class Shell {
         throw new AdditionIncorrectFormat();
     }
 
-    private void removeCharacters() throws AdditionIncorrectFormat {
+    private void removeCharacters() throws IncorrectRemoveChar {
         // Checks if the input is in a format of "remove" + space + something
         if (!checkIfStringValid(input, "remove")) {
             throw new IncorrectRemoveChar();
@@ -218,7 +220,8 @@ public class Shell {
             removeSpace();
             return;
         }
-        throw new AdditionIncorrectFormat();
+        throw new IncorrectRemoveChar();
+
     }
 
     private void controlResolution() throws ResolutionBoundaryException,WrongFormatResolution {
@@ -274,7 +277,6 @@ public class Shell {
         if (output.equals("console") || output.equals("html")) {
             outputMethod = output;
         } else {
-            System.out.println(INCORRECT_OUTPUT_INPUT);
             throw new MethodIncorrectFormat();
         }
     }

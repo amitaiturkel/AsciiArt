@@ -1,8 +1,10 @@
 package Exceptions;
 
 /**
- * Exception thrown when there is an issue with removing characters, typically due to an incorrect format.
- * This exception is a subclass of RuntimeException and is used to indicate problems with character removal.
+ * Exception thrown when there is an issue with removing characters, typically due to an
+ * incorrect format.
+ * This exception is a subclass of RuntimeException and is used to indicate problems with
+ * character removal.
  */
 public class IncorrectRemoveChar extends RuntimeException {
 

@@ -1,0 +1,63 @@
+amitat.turkel , yschwartz23
+314632878,318343654
+
+
+
+1.
+"ImageOperator"-we created a static class called "ImageOperator", this class implements all the neccery methodes we needed while dealing with a image,
+like dividing to sub images,get sub images britnees and so on, by haveing a solo class that deal with all the Image Operations we
+kept the Encpsoltions pattern, and also minamal api
+
+......
+
+....
+2.
+SubImgCharMatcher:
+
+We employed two hash maps within the SubImgCharMatcher class to manage brightness values efficiently.
+ One map is dedicated to pre-stretch brightness values, computed during program setup to achieve an outstanding O(1) 
+lookup time during ASCII art creation. The second map captures post-stretch brightness values, 
+dynamically adjusted as characters are added or removed. This design decision optimizes runtime performance for ASCII art generation
+. Additionally, the use of these hash maps contributes to a space complexity of O(1), 
+as we deal with a constant number of characters (86).
+AsciiArtAlgorithm:
+
+In the AsciiArtAlgorithm class, we made a deliberate choice to precalculate brightness values for each
+sub-image during instantiation.
+This decision, while leading to a linear space complexity of O(n) due to storing brightness values for all sub-images,
+significantly improves runtime efficiency when generating ASCII art with various characters.
+The trade-off between space and runtime complexities aligns with the goal of enabling dynamic character choices 
+without sacrificing performance during art creation.
+
+3.
+Exception Handling:
+
+Exception handling in our program is designed to enhance user experience and maintain code clarity.
+We introduced custom exception classes, each tailored to specific user input errors.
+ All custom exceptions inherit from the RuntimeException base class, 
+promoting a unified approach to exception handling. By associating meaningful error messages with each exception,
+we ensure informative feedback for users. 
+We also catch specific exceptions related to user input errors and IO exceptions thrown by the Image class, 
+providing targeted responses to different error scenarios.
+
+4.
+SubImgCharMatcher API:
+
+We intentionally maintained the original API of the SubImgCharMatcher class without alterations.
+This decision ensures the integrity of the class's interface, promoting compatibility with existing code. By preserving the API,
+we contribute to code stability and minimize potential disruptions in other parts of the program.
+
+5.
+AsciiArtAlgorithm Modification:
+
+To balance minimal API design with flexibility, we modified the AsciiArtAlgorithm constructor to accept 
+a SubImgCharMatcher instance. 
+This adjustment empowers the AsciiArtAlgorithm to access and manipulate characters without exposing
+an extensive public API. By passing a reference to SubImgCharMatcher,
+we enable dynamic character additions and removals in the Shell class without necessitating the creation
+of new AsciiArtAlgorithm instances. This design promotes modularity and encapsulation while catering 
+to the specific needs of the Shell class.
+
+
+
+ 

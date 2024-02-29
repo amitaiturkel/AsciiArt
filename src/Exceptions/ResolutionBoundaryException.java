@@ -2,7 +2,8 @@ package Exceptions;
 
 /**
  * Exception thrown when attempting to change the resolution exceeds predefined boundaries.
- * This exception is a subclass of RuntimeException and is used to indicate problems with resolution changes.
+ * This exception is a subclass of RuntimeException and is used to indicate problems
+ * with resolution changes.
  */
 public class ResolutionBoundaryException extends RuntimeException {
 
