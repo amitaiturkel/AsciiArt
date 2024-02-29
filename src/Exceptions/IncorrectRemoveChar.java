@@ -9,7 +9,7 @@ package Exceptions;
 public class IncorrectRemoveChar extends RuntimeException {
 
     // Error message for incorrect character removal format
-    private static final String INCORRECT_REMOVE_INPUT = "Did not remove due to an incorrect format.";
+    private static final String INCORRECT_REMOVE_INPUT = "Did not remove due to incorrect format.";
 
     /**
      * Constructs an instance of IncorrectRemoveChar with the predefined error message.

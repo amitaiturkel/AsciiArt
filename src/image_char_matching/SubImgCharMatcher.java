@@ -31,7 +31,7 @@ public class SubImgCharMatcher {
     private boolean updateMin(char c) {
         if (minCharValue >= charBrightness(c)) {
             if(minCharValue == charBrightness(c)){
-                maxChar = (char)Math.min((int)minChar, (int)c);
+                minChar = (char)Math.min((int)minChar, (int)c);
             }
             minCharValue = charBrightness(c);
             minChar = c;

@@ -26,44 +26,25 @@ public class Shell {
 
     // used in runAsciiArtAlgorithm
     private static final String FONT = "Courier New";
-    private static final String EMPTY_CHAR_SET = "Did not execute. Charset is empty.";
 
-        // used in run
-    private static final String UNIDENTIFIED_COMMAND = "Did not execute due to incorrect command.";
-
-        // used in chooseOutput
     private static final int OUTPUT_PLUS_ANOTHER_WORD = 8;
     private static final int BEGINNING_OF_SECOND_WORD_OF_OUTPUT = 7;
-    private static final String INCORRECT_OUTPUT_INPUT =    "Did not change output method " +
-                                                            "due to incorrect format.";
 
-        // used in selectImageFile
     private static final int IMAGE_PLUS_ANOTHER_WORD = 7;
     private static final int BEGINNING_OF_SECOND_WORD_OF_IMAGE = 6;
-    private static final String ERROR_PRINTING_IMAGE = "Did not execute due to problem with image file.";
 
-        // used in controlResolution
     private static final int RES_PLUS_UP = 6;
     private static final int RES_PLUS_DOWN = 8;
     private static final int UP_DOWN_INDEX = 4;
-    private static final String INCORRECT_RES_INPUT = "Did not change resolution due to incorrect format.";
 
-        // used in checkIfAddStringValid
     private static final int ADD_PLUS_CHAR = 5;
     private static final int TO_ADD_INDEX = 4;
-    private static final String INCORRECT_ADD_INPUT = "Did not add due to incorrect format.";
 
-        // used in checkIfRemoveStringValid
     private static final int REMOVE_PLUS_CHAR = 8;
     private static final int TO_REMOVE_INDEX = 7;
-    private static final String INCORRECT_REMOVE_INPUT = "Did not remove due to incorrect format.";
 
-        // used in IsStringInFormatCharToChar
     private static final int CHAR_TO_CHAR_LENGTH = 3;
-    private static final String RES_IS_TWO = "Did not change resolution due to exceeding boundaries."
-    ;
-    private static final String INCORRECT_FORMAT = "Did not change resolution due to incorrect format."
-    ;
+
     private static final int POWER_OF_TWO = 2;
 
     // attributes
@@ -259,6 +240,13 @@ public class Shell {
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
         try {
             image = new Image(imageString);
+            int dotIndex = imageString.indexOf('.');
+
+            // Extract the substring until the first "."
+            imageName = imageString.substring(0, dotIndex);
+            asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
+
+
         }
         catch (IOException e){
             throw new ImageExceptions();

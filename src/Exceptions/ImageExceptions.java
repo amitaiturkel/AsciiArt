@@ -7,7 +7,7 @@ package Exceptions;
 public class ImageExceptions extends RuntimeException {
 
     // Error message for issues with the image file
-    private static final String ERROR_PRINTING_IMAGE = "Did not execute due to  problem with " +
+    private static final String ERROR_PRINTING_IMAGE = "Did not execute due to problem with " +
             "the image file.";
 
     /**
