@@ -24,8 +24,7 @@ public class Shell {
         // used in case of image failure
     private static final String IMAGE_FAILURE = "Did not execute due to problem with image file.";
 
-
-    // used in runAsciiArtAlgorithm
+        // used in runAsciiArtAlgorithm
     private static final String FONT = "Courier New";
     private static final String EMPTY_CHAR_SET = "Did not execute. Charset is empty.";
 
@@ -61,10 +60,8 @@ public class Shell {
 
         // used in IsStringInFormatCharToChar
     private static final int CHAR_TO_CHAR_LENGTH = 3;
-    private static final String RES_IS_TWO = "Did not change resolution due to exceeding boundaries."
-    ;
-    private static final String INCORRECT_FORMAT = "Did not change resolution due to incorrect format."
-    ;
+    private static final String RES_IS_TWO = "Did not change resolution due to exceeding boundaries.";
+    private static final String INCORRECT_FORMAT = "Did not change resolution due to incorrect format.";
     private static final int POWER_OF_TWO = 2;
 
     // attributes
