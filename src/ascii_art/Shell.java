@@ -1,4 +1,5 @@
 package ascii_art;
+import Exceptions.*;
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
@@ -10,8 +11,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import static java.util.Collections.addAll;
 
 /**
  * The Shell class represents the command-line shell for interacting with the ASCII art generation system.
@@ -88,8 +87,8 @@ public class Shell {
             char[] charArray = setToArray(charSet);
             charMatcher = new SubImgCharMatcher(charArray);
             asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
-        } catch (IOException e) {
-            System.out.println(IMAGE_FAILURE);
+        } catch (RuntimeException | IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -107,8 +106,10 @@ public class Shell {
             try {
                 processInput();
             }
-            catch (IOException e){
-                System.out.println(ERROR_PRINTING_IMAGE);
+            catch (RuntimeException | IOException e){
+                System.out.println(e.getMessage());
+                System.out.print(">>> ");
+                input = KeyboardInput.readLine();
                 continue;
 
             }
@@ -119,7 +120,7 @@ public class Shell {
         System.exit(0);
     }
 
-    private void processInput() throws IOException {
+    private void processInput() throws IOException,RuntimeException {
         String command = extractFirstWordOfInput();
         switch (command) {
             case "chars":
@@ -144,7 +145,7 @@ public class Shell {
                 runAsciiArtAlgorithm();
                 break;
             default:
-                System.out.println(UNIDENTIFIED_COMMAND);
+                throw new IncorrectExecuteCommend();
         }
     }
 
@@ -162,7 +163,7 @@ public class Shell {
     private void addCharacters() {
         // Checks if the input is in a format of "add" + space + something
         if (!checkIfStringValid(input, "add")) {
-            return;
+            throw new AdditionIncorrectFormat();
         }
         // extract from input the thing the user wants to add
         String toAdd = input.substring(TO_ADD_INDEX);
@@ -186,13 +187,13 @@ public class Shell {
             addSpace();
             return;
         }
-        System.out.println(INCORRECT_ADD_INPUT);
+        throw new AdditionIncorrectFormat();
     }
 
-    private void removeCharacters() {
+    private void removeCharacters() throws IncorrectRemoveChar {
         // Checks if the input is in a format of "remove" + space + something
         if (!checkIfStringValid(input, "remove")) {
-            return;
+            throw new IncorrectRemoveChar();
         }
         // extract from input the thing the user wants to remove
         String toRemove = input.substring(TO_REMOVE_INDEX);
@@ -216,41 +217,40 @@ public class Shell {
             removeSpace();
             return;
         }
-        System.out.println(INCORRECT_REMOVE_INPUT);
+        throw new IncorrectRemoveChar();
+
     }
 
-    private void controlResolution() {
+    private void controlResolution() throws ResolutionBoundaryException,WrongFormatResolution {
         if (input.length() == RES_PLUS_UP) {
             if (input.substring(UP_DOWN_INDEX).equals("up")) {
-                if(resolution*2 > findNextTwoPower(image.getWidth())){
-                    System.out.println(RES_IS_TWO);
-                    return;
+                if (resolution * 2 > findNextTwoPower(image.getWidth())) {
+                    throw new ResolutionBoundaryException();
                 }
                 resolution *= 2;
-                asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
+                asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
         }
         if (input.length() == RES_PLUS_DOWN) {
             if (input.substring(UP_DOWN_INDEX).equals("down")) {
-                if(resolution/2 < Math.max(1, findNextTwoPower(image.getWidth())/
-                        findNextTwoPower(image.getHeight()))){
-                    System.out.println(RES_IS_TWO);
-                    return;
+                if (resolution / 2 < Math.max(1, findNextTwoPower(image.getWidth()) /
+                        findNextTwoPower(image.getHeight()))) {
+                    throw new ResolutionBoundaryException();
                 }
                 resolution /= 2;
-                asciiArtAlgorithm = new AsciiArtAlgorithm(image,resolution,charMatcher);
+                asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution, charMatcher);
                 System.out.println("Resolution set to " + resolution + ".");
                 return;
             }
         }
-        System.out.println(INCORRECT_RES_INPUT);
+        throw new WrongFormatResolution();
     }
 
     private void selectImageFile() throws IOException {
         if (input.length() < IMAGE_PLUS_ANOTHER_WORD) {
-            System.out.println(ERROR_PRINTING_IMAGE);
+            throw new ImageExceptions();
         }
 
         String imageString = input.substring(BEGINNING_OF_SECOND_WORD_OF_IMAGE);
@@ -258,15 +258,15 @@ public class Shell {
             image = new Image(imageString);
         }
         catch (IOException e){
-            System.out.println(ERROR_PRINTING_IMAGE);
+            throw new ImageExceptions();
         }
 
     }
 
-    private void chooseOutput() {
+    private void chooseOutput() throws MethodIncorrectFormat {
         // check if input is too short
         if (input.length() < OUTPUT_PLUS_ANOTHER_WORD) {
-            System.out.println(INCORRECT_OUTPUT_INPUT);
+            throw new MethodIncorrectFormat();
         }
 
         String output = input.substring(BEGINNING_OF_SECOND_WORD_OF_OUTPUT);
@@ -274,15 +274,15 @@ public class Shell {
         if (output.equals("console") || output.equals("html")) {
             outputMethod = output;
         } else {
-            System.out.println(INCORRECT_OUTPUT_INPUT);
+            throw new MethodIncorrectFormat();
         }
     }
 
-    private void runAsciiArtAlgorithm() {
+    private void runAsciiArtAlgorithm() throws RuntimeException {
         // if the charSet is empty, an error message will be printed
         if (charSet.isEmpty()) {
-            System.out.println(EMPTY_CHAR_SET);
-            return;
+            throw new EmptyCharSet();
+            
         }
         char[][] asciiImage = asciiArtAlgorithm.run();
 
@@ -413,10 +413,8 @@ public class Shell {
         for (char c : charSet) {
             charArray[index++] = c;
         }
-
         // Sort the char[] array based on ASCII values
         Arrays.sort(charArray);
-
         return charArray;
     }
 
@@ -440,31 +438,26 @@ public class Shell {
      */
     private boolean checkIfStringValid(String input, String addOrRemove) {
         int minLength = 0;
-        String invalidMessage = "";
         int AddOrRemoveIndex = 0;
         switch (addOrRemove) {
             case ("add"):
                 minLength = ADD_PLUS_CHAR;
-                invalidMessage = INCORRECT_ADD_INPUT;
                 AddOrRemoveIndex = TO_ADD_INDEX;
                 break;
 
             case ("remove"):
                 minLength = REMOVE_PLUS_CHAR;
-                invalidMessage = INCORRECT_REMOVE_INPUT;
                 AddOrRemoveIndex = TO_REMOVE_INDEX;
                 break;
         }
         // the user entered just "add" or "add " / "remove" or "remove "
         if (input.length() < minLength) {
-            System.out.println(invalidMessage);
             return false;
         }
         // extract from input the thing the user wants to add / remove
         String toAddOrRemove = input.substring(AddOrRemoveIndex);
         // toAddOrRemove should not contain " "
         if (toAddOrRemove.contains(" ")) {
-            System.out.println(invalidMessage);
             return false;
         }
         return true;

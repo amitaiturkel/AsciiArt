@@ -11,7 +11,6 @@ import java.util.*;
  * A class that handles matching characters based on their brightness levels.
  */
 public class SubImgCharMatcher {
-    private Set<Character> myCharSet = new HashSet<>();
     private Map<Character, Double> charBrightnessMapBeforeStratch = new HashMap<>();
     private Map<Character, Double> FinalcharBrightness = new HashMap<>();
     private double minCharValue;
@@ -20,7 +19,7 @@ public class SubImgCharMatcher {
     private char maxChar;
 
     private void createFinalMap() {
-        for (Character c : myCharSet) {
+        for (Character c : charBrightnessMapBeforeStratch.keySet()) {
             FinalcharBrightness.put(c, charToDouble(c));
 
         }
@@ -77,7 +76,6 @@ public class SubImgCharMatcher {
         maxCharValue = 0;
         boolean changed;
         for (char c : charset) {
-            myCharSet.add(c);
             charBrightnessMapBeforeStratch.put(c, charBrightness(c));
             changed = updateMinMax(c);
         }
@@ -141,7 +139,6 @@ public class SubImgCharMatcher {
      * @param c the character to add.
      */
     public void addChar(char c) {
-        myCharSet.add(c);
         charBrightnessMapBeforeStratch.put(c, charBrightness(c));
         boolean changed = updateMinMax(c);
         if (changed) {
@@ -156,12 +153,11 @@ public class SubImgCharMatcher {
      * @param c the character to remove.
      */
     public void removeChar(char c) {
-        myCharSet.remove(c);
         FinalcharBrightness.remove(c);
         charBrightnessMapBeforeStratch.remove(c, charBrightness(c));
         if (c == minChar) {
             minCharValue = 1; // so minChar will work
-            for (char c1 : myCharSet) {
+            for (char c1 : charBrightnessMapBeforeStratch.keySet()) {
                 updateMin(c1);
             }
 
@@ -169,7 +165,7 @@ public class SubImgCharMatcher {
 
         if (c == maxChar) {
             maxCharValue = -1; // so updateMax will work
-            for (char c1 : myCharSet) {
+            for (char c1 : charBrightnessMapBeforeStratch.keySet()) {
                 updateMax(c1);
 
             }

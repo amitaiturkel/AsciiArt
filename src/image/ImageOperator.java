@@ -116,9 +116,6 @@ public class ImageOperator {
      * @return Grayscale value.
      */
     public static double colorToGray(Color color) {
-        if (color == null) {
-            throw new IllegalArgumentException("Color cannot be null");
-        }
 
         return  color.getRed() * RED_TO_GRAY +
                 color.getGreen() * GREEN_TO_GRAY +
