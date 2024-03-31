@@ -1,6 +1,51 @@
+**README.md**
 
+# ASCII Art Generator
 
-1.
+## Overview
+This Java program is an ASCII art generator that allows users to manipulate character sets, handle images, control resolution, and produce ASCII art from input images.
+
+## How to Run
+To run the ASCII art generator, follow these steps:
+
+1. **Clone the Repository:** 
+   Clone the repository to your local machine using Git:
+   ```
+   git clone https://github.com/amitaiturkel/ascii-art-generator.git
+   ```
+
+2. **Compile the Code:**
+   Navigate to the project directory and compile the Java files:
+   ```
+   javac *.java
+   ```
+
+3. **Run the Program:**
+   Execute the compiled `Main` class:
+   ```
+   java Main
+   ```
+
+4. **Interact with the Program:**
+   Once the program is running, you can interact with it using the command-line interface. Follow the on-screen instructions to perform various tasks such as viewing character sets, adding/removing characters, selecting image files, controlling resolution, and generating ASCII art.
+
+5. **Exiting the Program:**
+   To exit the program, type `exit` and press Enter. 
+
+## Command List
+Here is a list of commands you can use within the program:
+
+- `chars`: View available character sets.
+- `add`: Add characters to the set.
+- `remove`: Remove characters from the set.
+- `res`: Control resolution settings.
+- `image`: Select an image file to convert to ASCII art.
+- `output`: Choose the output format.
+- `asciiArt`: Generate ASCII art from the selected image.
+
+## Troubleshooting
+If you encounter any issues while running the program, ensure that you have Java Development Kit (JDK) installed on your system and that the `javac` and `java` commands are accessible from the command line. Additionally, make sure you have the necessary permissions to read/write files in the project directory.
+
 
 1.1 Image Class:
    - Role: Represents an image and provides methods for reading, processing, and saving images.
