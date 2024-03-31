@@ -1,8 +1,7 @@
 
+#ASCII Art Generator
 
-# ASCII Art Generator
-
-## Overview
+##Overview
 This Java program is an ASCII art generator that allows users to manipulate character sets, handle images, control resolution, and produce ASCII art from input images.
 
 ## How to Run
