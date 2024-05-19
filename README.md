@@ -16,7 +16,7 @@ To run the ASCII art generator, follow these steps:
 2. **Compile the Code:**
    Navigate to the project directory and compile the Java files:
    ```
-javac Exceptions/*.java ascii_art/*.java ascii_output/*.java image/*.java image_char_matching/*.java
+   javac Exceptions/*.java ascii_art/*.java ascii_output/*.java image/*.java image_char_matching/*.java
    ```
 
 3. **Run the Program:**
