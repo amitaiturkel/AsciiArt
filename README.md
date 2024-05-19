@@ -16,13 +16,14 @@ To run the ASCII art generator, follow these steps:
 2. **Compile the Code:**
    Navigate to the project directory and compile the Java files:
    ```
-   javac *.java
+javac Exceptions/*.java ascii_art/*.java ascii_output/*.java image/*.java image_char_matching/*.java
    ```
 
 3. **Run the Program:**
-   Execute the compiled `Main` class:
+   Execute the compiled `Shell` class:
    ```
-   java Main
+   java ascii_art.Shell
+
    ```
 
 4. **Interact with the Program:**
