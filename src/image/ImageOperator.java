@@ -209,7 +209,7 @@ public class ImageOperator {
     private static int findNextTwoPower(int num) {
         int power = POWER_OF_TWO;
         while (power < num) {
-            power *= POWER_OF_TWO;
+            power <<= 1;
         }
         return power;
     }
