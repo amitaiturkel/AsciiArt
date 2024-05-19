@@ -493,7 +493,7 @@ public class Shell {
     private static int findNextTwoPower(int num) {
         int power = POWER_OF_TWO;
         while (power < num) {
-            power *= POWER_OF_TWO;
+            power <<= POWER_OF_TWO;
         }
         return power;
     }
